@@ -43,8 +43,13 @@ export const metadata: Metadata = {
     images: ["/og.png"],
   },
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: [
+      { url: "/assets/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/assets/bavexa-icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/assets/bavexa-icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/assets/favicon-32.png",
+    apple: [{ url: "/assets/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 

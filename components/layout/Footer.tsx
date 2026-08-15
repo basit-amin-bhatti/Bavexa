@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/content/site";
 
 const footerLinks = [
@@ -15,8 +16,14 @@ export function Footer() {
       <div className="container footer-grid">
         <div>
           <Link className="brand footer-brand" href="/" aria-label="BAVEXA home">
-            <span className="brand-mark" aria-hidden="true">B</span>
-            <span className="brand-name">BAVEXA</span>
+            <Image
+              className="brand-logo"
+              src="/assets/bavexa-logo.png"
+              alt="BAVEXA"
+              width={1021}
+              height={124}
+              unoptimized
+            />
           </Link>
           <p className="footer-positioning">{siteConfig.brand.positioning}</p>
         </div>

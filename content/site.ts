@@ -5,26 +5,24 @@ export const siteConfig = {
     url: "https://bavexa.tech",
   },
   nav: [
-    { label: "How It Works", href: "/how-it-works" },
-    { label: "Solutions", href: "/solutions" },
-    { label: "Demo", href: "/demo" },
-    { label: "About", href: "/about" },
+    { label: "How It Works", href: "/#how-it-works" },
+    { label: "Solutions", href: "/#solutions" },
+    { label: "Demo", href: "/#demo" },
+    { label: "Founder", href: "/#about" },
   ],
   ctas: {
     primary: "Get Your Free AI Lead Conversion Audit",
     primaryShort: "Get Free AI Audit",
     primaryHref: "/contact",
     secondary: "See How It Works",
-    secondaryHref: "/how-it-works",
-    demo: "Watch the 60-Second Demo",
-    demoHref: "/demo",
+    secondaryHref: "/#how-it-works",
   },
   founder: {
     name: "Basit Amin Bhatti",
     role: "Founder, BAVEXA",
     positioning: "AI Growth Partner for Roofing Companies",
-    image: "/images/founder.jpg",
-    imageEnabled: false,
+    image: "/images/founder.png",
+    imageEnabled: true,
     website: "https://basitaminbhatti.me",
     message:
       "I built BAVEXA to help roofing companies stop losing valuable leads through missed calls, slow responses, poor qualification, and weak follow-up.",
@@ -145,15 +143,6 @@ export const howItWorks = [
     title: "Inspection Gets Booked",
     copy: "Qualified opportunities are moved toward available inspection appointments.",
   },
-] as const;
-
-export const outcomes = [
-  "More Leads Answered",
-  "Faster Response",
-  "More Qualified Opportunities",
-  "More Inspection Opportunities",
-  "Less Manual Follow-Up",
-  "Cleaner CRM Information",
 ] as const;
 
 export const audiences = [

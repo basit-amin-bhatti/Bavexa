@@ -1,12 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/content/site";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const updateHeaderState = () => setScrolled(window.scrollY > 24);
+
+    updateHeaderState();
+    window.addEventListener("scroll", updateHeaderState, { passive: true });
+
+    return () => window.removeEventListener("scroll", updateHeaderState);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -21,11 +32,18 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="site-header">
+    <header className={`site-header ${scrolled ? "site-header-scrolled" : ""}`}>
       <div className="container nav-shell">
         <Link className="brand" href="/" aria-label="BAVEXA home" onClick={() => setOpen(false)}>
-          <span className="brand-mark" aria-hidden="true">B</span>
-          <span className="brand-name">BAVEXA</span>
+          <Image
+            className="brand-logo"
+            src="/assets/bavexa-logo.png"
+            alt="BAVEXA"
+            width={1021}
+            height={124}
+            priority
+            unoptimized
+          />
         </Link>
 
         <nav className="desktop-nav" aria-label="Primary navigation">

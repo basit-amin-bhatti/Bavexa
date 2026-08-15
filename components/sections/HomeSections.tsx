@@ -14,11 +14,11 @@ import {
   RefreshCw,
   SearchCheck,
   Send,
-  Sparkles,
   Target,
   Workflow,
 } from "lucide-react";
 import { AuditForm } from "@/components/AuditForm";
+import { CalBookingButton } from "@/components/CalBookingButton";
 import { DemoExperience } from "@/components/DemoExperience";
 import { FounderPortrait } from "@/components/FounderPortrait";
 import { LeadJourney } from "@/components/LeadJourney";
@@ -29,7 +29,6 @@ import {
   audiences,
   howItWorks,
   leadFlow,
-  outcomes,
   problems,
   siteConfig,
   solutions,
@@ -52,7 +51,7 @@ export function HeroSection() {
           <p className="hero-support">We help roofing companies respond to every lead faster and turn more inquiries into booked roof inspections.</p>
           <div className="hero-actions">
             <Button href="/contact">{siteConfig.ctas.primary}</Button>
-            <Button href="/how-it-works" variant="secondary">{siteConfig.ctas.secondary}</Button>
+            <Button href={siteConfig.ctas.secondaryHref} variant="secondary">{siteConfig.ctas.secondary}</Button>
           </div>
           <p className="hero-reassurance"><CircleCheck size={16} aria-hidden="true" /> No pressure. We’ll simply show you where leads may be slipping through the cracks.</p>
         </div>
@@ -110,7 +109,7 @@ export function ProblemSection() {
 
 export function SolutionSection() {
   return (
-    <section className="section dark-section solution-section">
+    <section className="section dark-section solution-section" id="solutions">
       <div className="container">
         <div className="solution-heading-row">
           <SectionHeading theme="dark" eyebrow="THE BAVEXA AI LEAD CONVERSION SYSTEM" title={<>One AI System.<br />More Opportunities Captured.</>} copy="BAVEXA sits between your marketing and sales team—responding, qualifying, following up, booking, and passing useful context forward." />
@@ -143,13 +142,12 @@ export function ComparisonSection() {
   );
 }
 
-export function HowItWorksSection({ showCta = true }: { showCta?: boolean }) {
+export function HowItWorksSection() {
   return (
-    <section className="section how-section">
+    <section className="section how-section" id="how-it-works">
       <div className="container">
         <div className="section-split-heading">
           <SectionHeading eyebrow="HOW IT WORKS" title="From New Lead to Booked Inspection." copy="BAVEXA supports the response process around your team, so promising conversations keep moving." />
-          {showCta ? <Button href="/how-it-works" variant="secondary">Explore the full workflow</Button> : null}
         </div>
         <ol className="how-list">
           {howItWorks.map((step, index) => (
@@ -172,44 +170,16 @@ export function RoiSection() {
   );
 }
 
-export function DemoSection({ compact = false }: { compact?: boolean }) {
+export function DemoSection() {
   return (
-    <section className={`section demo-section ${compact ? "demo-section-compact" : ""}`}>
+    <section className="section demo-section" id="demo">
       <div className="container demo-layout">
         <div className="demo-copy">
           <SectionHeading theme="dark" eyebrow="60-SECOND PRODUCT DEMO" title="See a Roofing Lead Move Through BAVEXA." copy="Watch the complete journey from first contact to qualified inspection opportunity." />
           <ol className="demo-stage-inline">{["Incoming Lead", "AI Conversation", "Qualification", "SMS Follow-Up", "Inspection Booking", "CRM Update"].map((stage, index) => <li key={stage}><span>{String(index + 1).padStart(2, "0")}</span>{stage}</li>)}</ol>
           <p className="demo-sound-note">No autoplay. No customer footage. Just the product workflow.</p>
         </div>
-        <DemoExperience compact={compact} />
-      </div>
-    </section>
-  );
-}
-
-export function OutcomesSection() {
-  return (
-    <section className="section outcomes-section">
-      <div className="container">
-        <div className="section-split-heading">
-          <SectionHeading eyebrow="OPERATIONAL OUTCOMES" title="Designed to Help Your Team Capture More of What You’re Already Generating." />
-          <p className="illustrative-note"><Sparkles size={15} aria-hidden="true" /> Product interface below is illustrative—not customer performance data.</p>
-        </div>
-        <div className="outcomes-dashboard">
-          <div className="dashboard-topbar"><span>LEAD CONVERSION OVERVIEW</span><div><i /> Workflow active</div></div>
-          <div className="outcome-grid">
-            {outcomes.map((outcome, index) => (
-              <article key={outcome}><span>{["RESPONSE", "SPEED", "QUALITY", "BOOKING", "EFFICIENCY", "CONTEXT"][index]}</span><strong>{outcome}</strong><div className={`outcome-visual visual-${index + 1}`}><i /><i /><i /><i /></div><p>{[
-                "More enquiries enter an active conversation.",
-                "New leads receive an earlier first touch.",
-                "The team sees useful qualification context.",
-                "Suitable prospects get a clear next step.",
-                "Structured sequences reduce repetitive chasing.",
-                "Lead status and conversation details stay cleaner.",
-              ][index]}</p></article>
-            ))}
-          </div>
-        </div>
+        <DemoExperience />
       </div>
     </section>
   );
@@ -224,7 +194,17 @@ export function AudienceSection() {
           <ul>{audiences.map((item) => <li key={item}><Check size={15} aria-hidden="true" />{item}</li>)}</ul>
           <Button href="/contact">See where leads may be leaking</Button>
         </div>
-        <figure className="audience-photo"><Image src="/images/roofing-commercial.jpg" alt="Roofing professional inspecting a modern commercial building roof" fill sizes="(max-width: 900px) 100vw, 48vw" /><figcaption><strong>Residential + commercial</strong><span>One consistent lead-conversion process</span></figcaption></figure>
+        <aside className="booking-cta-card" aria-labelledby="booking-cta-title">
+          <div className="booking-cta-content">
+            <span className="booking-cta-kicker"><CalendarCheck2 size={16} aria-hidden="true" /> Speak With the Founder</span>
+            <h3 id="booking-cta-title">Let’s Find Where Your Roofing Leads Are Slipping Away.</h3>
+            <p>Book a free strategy call with Basit Amin Bhatti, Founder of BAVEXA, and explore how your lead response, qualification, follow-up, and inspection booking process could be improved.</p>
+          </div>
+          <div className="booking-cta-action">
+            <CalBookingButton />
+            <p><Check size={14} aria-hidden="true" /> Free strategy call <span aria-hidden="true">·</span> No obligation</p>
+          </div>
+        </aside>
       </div>
     </section>
   );
@@ -245,7 +225,7 @@ export function IntegrationsSection() {
 export function FounderSection() {
   const founder = siteConfig.founder;
   return (
-    <section className="section founder-section">
+    <section className="section founder-section" id="about">
       <div className="container founder-card">
         <FounderPortrait />
         <div className="founder-copy">
@@ -256,18 +236,6 @@ export function FounderSection() {
           <a href={founder.website} target="_blank" rel="noreferrer">{founder.cta}</a>
         </div>
         <div className="founder-brand-relationship"><span>THE EXPERT</span><strong>Basit</strong><ArrowRight aria-hidden="true" /><span>THE SYSTEM</span><strong>BAVEXA</strong></div>
-      </div>
-    </section>
-  );
-}
-
-export function AboutSection() {
-  return (
-    <section className="section about-section">
-      <div className="container about-grid">
-        <div><span className="about-mark">B</span><p>AI Lead Qualification<br />&amp; Follow-Up</p></div>
-        <div><span className="eyebrow">ABOUT BAVEXA</span><h2>Built to Fix the Gap Between Lead Generation and Sales.</h2></div>
-        <div><p>Roofing companies spend money generating leads, but opportunities can still be lost because calls are missed, responses are delayed, follow-up becomes inconsistent, or the next step never gets booked.</p><p>BAVEXA uses AI and automation to help roofing companies respond, qualify, follow up with, and move suitable prospects toward booked roof inspections.</p><strong>Founded by Basit Amin Bhatti, BAVEXA is focused specifically on helping roofing companies create a faster and more consistent lead-conversion process.</strong></div>
       </div>
     </section>
   );
@@ -289,25 +257,4 @@ export function AuditSection() {
       </div>
     </section>
   );
-}
-
-export function FinalCtaSection() {
-  return (
-    <section className="final-cta-section">
-      <div className="container final-cta-grid">
-        <div><span className="eyebrow">CAPTURE MORE OF WHAT YOU ALREADY HAVE</span><h2>You Don’t Necessarily Need More Roofing Leads.<br /><em>You Need to Capture More of the Ones You Already Have.</em></h2></div>
-        <div><p>See where opportunities may be slipping through your current process and what a faster lead-response system could look like.</p><div className="final-actions"><Button href="/contact">{siteConfig.ctas.primary}</Button><Button href="/demo" variant="dark">{siteConfig.ctas.demo}</Button></div></div>
-      </div>
-    </section>
-  );
-}
-
-export function PageHero({ eyebrow, title, copy, aside }: { eyebrow: string; title: string; copy: string; aside?: React.ReactNode }) {
-  return (
-    <section className="page-hero"><div className="container page-hero-grid"><div><span className="hero-eyebrow"><i />{eyebrow}</span><h1>{title}</h1><p>{copy}</p><div className="hero-actions"><Button href="/contact">{siteConfig.ctas.primary}</Button><Button href="/demo" variant="secondary">Watch the Demo</Button></div></div>{aside ? <div>{aside}</div> : null}</div></section>
-  );
-}
-
-export function CompactAuditCta() {
-  return <section className="compact-audit-cta"><div className="container"><div><span>FREE LEAD CONVERSION AUDIT</span><h2>See where roofing leads may be slipping through.</h2></div><Button href="/contact">Get Your Free Audit</Button></div></section>;
 }

@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import {
-  AboutSection,
   AudienceSection,
-  AuditSection,
   ComparisonSection,
   DemoSection,
-  FinalCtaSection,
   FounderSection,
   HeroSection,
   HowItWorksSection,
   IntegrationsSection,
   LeadFlowSection,
-  OutcomesSection,
   ProblemSection,
   RoiSection,
   SolutionSection,
@@ -34,13 +30,9 @@ export default function Home() {
       <HowItWorksSection />
       <RoiSection />
       <DemoSection />
-      <OutcomesSection />
-      <AudienceSection />
       <IntegrationsSection />
       <FounderSection />
-      <AboutSection />
-      <AuditSection />
-      <FinalCtaSection />
+      <AudienceSection />
     </main>
   );
 }

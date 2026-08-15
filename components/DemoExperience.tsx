@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 const demoStages = ["Incoming Lead", "AI Conversation", "Qualification", "SMS Follow-Up", "Inspection Booking", "CRM Update"];
 
-export function DemoExperience({ compact = false }: { compact?: boolean }) {
+export function DemoExperience() {
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +43,7 @@ export function DemoExperience({ compact = false }: { compact?: boolean }) {
 
   return (
     <>
-      <button className={`demo-poster ${compact ? "demo-poster-compact" : ""}`} type="button" onClick={() => setOpen(true)} aria-label="Open the 60-second BAVEXA workflow demo">
+      <button className="demo-poster" type="button" onClick={() => setOpen(true)} aria-label="Open the 60-second BAVEXA workflow demo">
         <div className="demo-browser-bar"><i /><i /><i /><span>bavexa / lead-conversion</span><em>LIVE PREVIEW</em></div>
         <div className="demo-canvas">
           <div className="demo-lead-list">

@@ -21,6 +21,16 @@ npm run build
 
 ## Where to edit the site
 
+### Official BAVEXA branding
+
+The approved logo and icon sources are preserved in `public/assets/` as `bavexa-logo-source.png` and `bavexa-icon-source.png`.
+
+- `bavexa-logo.png` is the tightly cropped official wordmark used in the header and footer.
+- `bavexa-icon.png` is the tightly framed 512×512 brand icon.
+- `bavexa-icon-192.png`, `apple-touch-icon.png`, and `favicon-32.png` are framework-ready favicon sizes generated from the approved icon.
+
+Keep the same filenames when replacing these assets so the navigation, footer, and metadata continue to work without code changes.
+
 ### Site copy and brand settings
 
 Edit `content/site.ts`. It contains the main brand positioning, navigation, calls to action, founder record, capability copy, audiences, integration categories, and feature flags.
@@ -44,7 +54,6 @@ Replace these files while keeping the filenames:
 ```text
 public/images/roofing-hero.jpg
 public/images/roofing-inspection.jpg
-public/images/roofing-commercial.jpg
 ```
 
 Use optimized landscape JPEG or WebP files with descriptive, roofing-specific imagery. Current photos are free-to-use Unsplash images.
@@ -114,10 +123,6 @@ The calculator is an illustrative opportunity estimate. Its disclaimer must rema
 ## Routes
 
 - `/` — long-form homepage
-- `/how-it-works`
-- `/solutions`
-- `/demo`
-- `/about`
 - `/contact`
 - `/privacy`
 - `/terms`

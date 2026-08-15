@@ -1,0 +1,73 @@
+"use client";
+
+import { ArrowRight } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import { getCalApi } from "@calcom/embed-react";
+
+const CAL_LINK = "basitaminbhatti/roofing-growth-call";
+const CAL_NAMESPACE = "roofing-growth-call";
+
+export function CalBookingButton() {
+  const calApiPromise = useRef<ReturnType<typeof getCalApi> | null>(null);
+  const [opening, setOpening] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+
+  const prepareBooking = useCallback(() => {
+    if (!calApiPromise.current) {
+      calApiPromise.current = getCalApi({ namespace: CAL_NAMESPACE }).then((cal) => {
+        cal("ui", {
+          theme: "light",
+          hideEventTypeDetails: false,
+          layout: "month_view",
+          styles: { branding: { brandColor: "#1f71ff" } },
+        });
+        cal("preload", { calLink: CAL_LINK, type: "modal" });
+        return cal;
+      });
+    }
+
+    return calApiPromise.current;
+  }, []);
+
+  const warmBooking = () => {
+    void prepareBooking().catch(() => {
+      calApiPromise.current = null;
+    });
+  };
+
+  const openBooking = async () => {
+    setOpening(true);
+    setLoadError(false);
+
+    try {
+      const cal = await prepareBooking();
+      cal("modal", {
+        calLink: CAL_LINK,
+        config: { layout: "month_view" },
+      });
+    } catch {
+      calApiPromise.current = null;
+      setLoadError(true);
+    } finally {
+      setOpening(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        aria-busy={opening}
+        disabled={opening}
+        onClick={openBooking}
+        onPointerEnter={warmBooking}
+        onFocus={warmBooking}
+      >
+        <span>{opening ? "OPENING BOOKING CALENDAR…" : "BOOK A FREE ROOFING GROWTH CALL"}</span>
+        <ArrowRight size={18} aria-hidden="true" />
+      </button>
+      {loadError ? <span className="cal-booking-status" role="alert">The booking calendar could not load. Please try again.</span> : null}
+    </>
+  );
+}
