@@ -15,7 +15,6 @@
 
 # next.js
 /.next/
-/.vinext/
 /out/
 
 # misc
@@ -32,14 +31,8 @@ yarn-error.log*
 .env*
 !.env.example
 
-# local compiler and preview state
+# local compiler state
 *.tsbuildinfo
-.openai/*.log
 
 # vercel
 .vercel
-
-/dist/
-/.wrangler/
-/outputs/
-/work/

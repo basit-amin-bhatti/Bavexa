@@ -2,7 +2,7 @@
 
 Production website for **BAVEXA — AI Lead Conversion System for Roofing Companies**.
 
-The site is built with Next.js-compatible App Router conventions through Vinext, React, TypeScript, Tailwind CSS, Motion, and Lucide icons. It includes a long-form conversion homepage, six primary marketing routes, an interactive ROI calculator, product workflow animation, demo modal, audit form endpoint, SEO files, and structured data.
+The site is built with Next.js App Router, React, TypeScript, Tailwind CSS, Motion, and Lucide icons. It includes a long-form conversion homepage, four public routes, an interactive ROI calculator, product workflow animation, demo modal, audit form endpoint, SEO files, and structured data.
 
 ## Local setup
 
