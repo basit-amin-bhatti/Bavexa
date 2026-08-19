@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowRight, Check, Clock3, Play, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { CalBookingButton } from "@/components/CalBookingButton";
 
 const demoStages = ["Incoming Lead", "AI Conversation", "Qualification", "SMS Follow-Up", "Inspection Booking", "CRM Update"];
 
@@ -128,7 +129,7 @@ function DemoModal({ onClose, dialogRef }: { onClose: () => void; dialogRef: Rea
         </div>
         <div className="modal-note">
           <p><strong>Demo-ready setup.</strong> Add <code>/public/demo/bavexa-demo.mp4</code> to replace this product walkthrough with the final 60-second video.</p>
-          <a href="/contact">Get your free audit <ArrowRight size={15} aria-hidden="true" /></a>
+          <CalBookingButton onBeforeOpen={onClose} />
         </div>
       </motion.div>
     </motion.div>

@@ -5,15 +5,13 @@ export const siteConfig = {
     url: "https://bavexa.tech",
   },
   nav: [
+    { label: "System", href: "/#system" },
     { label: "How It Works", href: "/#how-it-works" },
-    { label: "Solutions", href: "/#solutions" },
     { label: "Demo", href: "/#demo" },
-    { label: "Founder", href: "/#about" },
+    { label: "Founder", href: "/#founder" },
   ],
   ctas: {
-    primary: "Get Your Free AI Lead Conversion Audit",
-    primaryShort: "Get Free AI Audit",
-    primaryHref: "/contact",
+    primary: "BOOK A FREE ROOFING GROWTH CALL",
     secondary: "See How It Works",
     secondaryHref: "/#how-it-works",
   },
@@ -29,12 +27,12 @@ export const siteConfig = {
     cta: "Meet Basit →",
   },
   integrations: [
-    "AI Voice",
+    "Lead Sources",
     "SMS",
     "CRM",
-    "Lead Sources",
     "Appointment Scheduling",
     "Automation",
+    "Webhooks / API",
   ],
   socialProof: {
     enabled: false,
@@ -49,15 +47,6 @@ export const siteConfig = {
     maximumMonthly: 497,
   },
 } as const;
-
-export const leadFlow = [
-  "Lead Contacts You",
-  "AI Responds",
-  "Lead Qualified",
-  "Follow-Up",
-  "Inspection Booked",
-  "CRM Updated",
-] as const;
 
 export const problems = [
   {
@@ -92,20 +81,16 @@ export const solutions = [
     copy: "Engage new enquiries without waiting for someone to manually respond.",
   },
   {
-    title: "AI Phone Handling",
-    copy: "Where enabled, handle initial inbound conversations and capture useful information.",
-  },
-  {
-    title: "Missed-Call Text Back",
+    title: "Missed-Call Text-Back",
     copy: "Automatically continue missed conversations through SMS.",
-  },
-  {
-    title: "AI Lead Qualification",
-    copy: "Collect service type, roof issue, service area, timeline, inspection preference, and readiness—without diagnosing roofing or structural issues.",
   },
   {
     title: "AI SMS Follow-Up",
     copy: "Keep promising prospects engaged through structured, consistent follow-up.",
+  },
+  {
+    title: "AI Lead Qualification",
+    copy: "Collect service type, roof issue, service area, timeline, inspection preference, and readiness—without diagnosing roofing or structural issues.",
   },
   {
     title: "Inspection Booking",
@@ -120,35 +105,22 @@ export const solutions = [
 export const howItWorks = [
   {
     number: "01",
-    title: "Lead Contacts You",
-    copy: "A homeowner calls, texts, or submits an enquiry.",
+    title: "Lead Contacts Your Roofing Company",
+    copy: "A homeowner calls, texts, or submits a lead.",
   },
   {
     number: "02",
-    title: "BAVEXA Responds",
-    copy: "The system starts the conversation while interest is fresh.",
+    title: "BAVEXA Responds Instantly",
+    copy: "Respond within seconds, 24/7, while the lead is still interested.",
   },
   {
     number: "03",
-    title: "BAVEXA Qualifies",
-    copy: "Relevant information is collected for the sales team.",
+    title: "AI Qualifies & Follows Up",
+    copy: "Collect the important lead details and automatically keep the conversation moving.",
   },
   {
     number: "04",
-    title: "Follow-Up Happens Automatically",
-    copy: "Structured SMS keeps the conversation moving.",
+    title: "Inspection Booked + CRM Updated",
+    copy: "Move qualified leads into available inspection slots and automatically update the CRM.",
   },
-  {
-    number: "05",
-    title: "Inspection Gets Booked",
-    copy: "Qualified opportunities are moved toward available inspection appointments.",
-  },
-] as const;
-
-export const audiences = [
-  "Residential Roofing Companies",
-  "Commercial Roofing Companies",
-  "Roofing Contractors",
-  "Growing Roofing Sales Teams",
-  "Multi-Location Roofing Businesses",
 ] as const;

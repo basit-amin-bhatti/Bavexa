@@ -7,7 +7,6 @@ import {
   CircleCheck,
   Clock3,
   DatabaseZap,
-  Headphones,
   MapPinCheck,
   MessageSquareText,
   PhoneMissed,
@@ -15,10 +14,12 @@ import {
   SearchCheck,
   Send,
   Target,
+  Webhook,
   Workflow,
 } from "lucide-react";
 import { AuditForm } from "@/components/AuditForm";
 import { CalBookingButton } from "@/components/CalBookingButton";
+import { ContactMessageForm } from "@/components/ContactMessageForm";
 import { DemoExperience } from "@/components/DemoExperience";
 import { FounderPortrait } from "@/components/FounderPortrait";
 import { LeadJourney } from "@/components/LeadJourney";
@@ -26,17 +27,15 @@ import { RoiCalculator } from "@/components/RoiCalculator";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
-  audiences,
   howItWorks,
-  leadFlow,
   problems,
   siteConfig,
   solutions,
 } from "@/content/site";
 
 const problemIcons = [PhoneMissed, Clock3, MessageSquareText, RefreshCw, SearchCheck, CalendarCheck2];
-const solutionIcons = [Clock3, Headphones, PhoneMissed, SearchCheck, MessageSquareText, CalendarCheck2, DatabaseZap];
-const integrationIcons = [Headphones, MessageSquareText, DatabaseZap, Send, CalendarCheck2, Workflow];
+const solutionIcons = [Clock3, PhoneMissed, MessageSquareText, SearchCheck, CalendarCheck2, DatabaseZap];
+const integrationIcons = [Send, MessageSquareText, DatabaseZap, CalendarCheck2, Workflow, Webhook];
 
 export function HeroSection() {
   return (
@@ -46,37 +45,18 @@ export function HeroSection() {
       </div>
       <div className="container hero-grid">
         <div className="hero-copy">
-          <p className="hero-eyebrow"><span /> AI LEAD CONVERSION SYSTEM FOR ROOFING COMPANIES</p>
-          <h1>Turn More Roofing Leads Into <em>Booked Inspections.</em></h1>
-          <p className="hero-support">We help roofing companies respond to every lead faster and turn more inquiries into booked roof inspections.</p>
+          <p className="hero-eyebrow"><span /> SECONDS MATTER IN ROOFING</p>
+          <h1>Respond to Every Roofing Lead in <em>Seconds—<span className="hero-hours">24/7</span></em></h1>
+          <p className="hero-support">BAVEXA responds to new roofing leads within seconds, 24/7—helping you book the inspection before they call another roofer.</p>
           <div className="hero-actions">
-            <Button href="/contact">{siteConfig.ctas.primary}</Button>
+            <CalBookingButton className="button button-primary" />
             <Button href={siteConfig.ctas.secondaryHref} variant="secondary">{siteConfig.ctas.secondary}</Button>
           </div>
           <p className="hero-reassurance"><CircleCheck size={16} aria-hidden="true" /> No pressure. We’ll simply show you where leads may be slipping through the cracks.</p>
         </div>
         <div className="hero-product"><LeadJourney /></div>
       </div>
-      <a className="hero-scroll" href="#lead-flow" aria-label="Scroll to see the BAVEXA lead flow"><span>SEE THE SYSTEM</span><ArrowDown size={16} aria-hidden="true" /></a>
-    </section>
-  );
-}
-
-export function LeadFlowSection() {
-  return (
-    <section className="lead-flow-section" id="lead-flow" aria-labelledby="lead-flow-heading">
-      <div className="container">
-        <div className="flow-intro"><span>THE BAVEXA WORKFLOW</span><h2 id="lead-flow-heading">One connected path from enquiry to sales-team context.</h2></div>
-        <ol className="lead-flow-list">
-          {leadFlow.map((item, index) => (
-            <li key={item}>
-              <span className={index === 4 ? "flow-number flow-success" : "flow-number"}>{index === 4 ? <Check size={16} aria-hidden="true" /> : String(index + 1).padStart(2, "0")}</span>
-              <strong>{item}</strong>
-              {index < leadFlow.length - 1 ? <ArrowRight className="flow-arrow" aria-hidden="true" /> : null}
-            </li>
-          ))}
-        </ol>
-      </div>
+      <a className="hero-scroll" href="#system" aria-label="Scroll to see the BAVEXA system"><span>SEE THE SYSTEM</span><ArrowDown size={16} aria-hidden="true" /></a>
     </section>
   );
 }
@@ -109,16 +89,16 @@ export function ProblemSection() {
 
 export function SolutionSection() {
   return (
-    <section className="section dark-section solution-section" id="solutions">
+    <section className="section dark-section solution-section" id="system">
       <div className="container">
         <div className="solution-heading-row">
-          <SectionHeading theme="dark" eyebrow="THE BAVEXA AI LEAD CONVERSION SYSTEM" title={<>One AI System.<br />More Opportunities Captured.</>} copy="BAVEXA sits between your marketing and sales team—responding, qualifying, following up, booking, and passing useful context forward." />
+          <SectionHeading theme="dark" eyebrow="THE BAVEXA AI LEAD CONVERSION SYSTEM" title={<>One Connected System.<br />More Opportunities Captured.</>} copy="From instant response and missed-call recovery through follow-up, qualification, inspection booking, and CRM updates, every step keeps the same roofing lead moving forward." />
           <div className="system-pill"><span>MARKETING</span><ArrowRight size={14} /><strong>BAVEXA</strong><ArrowRight size={14} /><span>SALES TEAM</span></div>
         </div>
         <div className="solution-grid">
           {solutions.map((solution, index) => {
             const Icon = solutionIcons[index];
-            return <article className={`solution-card ${index === 3 ? "solution-card-featured" : ""}`} key={solution.title}><span className="solution-index">0{index + 1}</span><Icon aria-hidden="true" /><h3>{solution.title}</h3><p>{solution.copy}</p>{index === 3 ? <div className="qualification-tags"><span>Service area</span><span>Roof issue</span><span>Timeline</span><span>Readiness</span></div> : null}</article>;
+            return <article className="solution-card" key={solution.title}><span className="solution-index">0{index + 1}</span><Icon aria-hidden="true" /><h3>{solution.title}</h3><p>{solution.copy}</p>{index === 3 ? <div className="qualification-tags"><span>Service area</span><span>Roof issue</span><span>Timeline</span><span>Readiness</span></div> : null}</article>;
           })}
         </div>
       </div>
@@ -127,15 +107,15 @@ export function SolutionSection() {
 }
 
 export function ComparisonSection() {
-  const without = ["Lead comes in", "Office busy", "Call missed", "Lead waits", "Follow-up delayed", "Opportunity goes cold"];
-  const withBavexa = ["Lead comes in", "Response begins", "Lead engaged", "Information collected", "Follow-up continues", "Inspection booked", "Team receives context"];
+  const without = ["Lead comes in", "Response delayed", "Call/text missed", "Follow-up inconsistent", "Homeowner contacts another roofer", "Opportunity lost"];
+  const withBavexa = ["Lead comes in", "Response within seconds", "Lead qualified", "Automated follow-up", "Inspection Booked", "CRM updated"];
   return (
     <section className="section comparison-section">
       <div className="container">
-        <SectionHeading align="center" eyebrow="A MORE CONSISTENT RESPONSE PROCESS" title="Before vs. After BAVEXA" copy="The difference is not more leads. It’s a clearer path for the opportunities already entering your business." />
+        <SectionHeading align="center" eyebrow="A MORE CONSISTENT RESPONSE PROCESS" title="What Changes With BAVEXA." copy="BAVEXA helps you get more value from the roofing leads you’re already generating." />
         <div className="comparison-grid">
           <article className="comparison-card comparison-before"><div className="comparison-title"><span>WITHOUT BAVEXA</span><i>Manual gaps</i></div><ol>{without.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>)}</ol></article>
-          <article className="comparison-card comparison-after"><div className="comparison-title"><span>WITH BAVEXA</span><i>Connected workflow</i></div><ol>{withBavexa.map((item, index) => <li key={item}><span>{index === 5 ? <Check size={13} aria-hidden="true" /> : String(index + 1).padStart(2, "0")}</span>{item}</li>)}</ol></article>
+          <article className="comparison-card comparison-after"><div className="comparison-title"><span>WITH BAVEXA</span><i>Connected workflow</i></div><ol>{withBavexa.map((item, index) => <li key={item}><span>{index === 4 ? <Check size={13} aria-hidden="true" /> : String(index + 1).padStart(2, "0")}</span>{item}</li>)}</ol></article>
         </div>
       </div>
     </section>
@@ -147,11 +127,11 @@ export function HowItWorksSection() {
     <section className="section how-section" id="how-it-works">
       <div className="container">
         <div className="section-split-heading">
-          <SectionHeading eyebrow="HOW IT WORKS" title="From New Lead to Booked Inspection." copy="BAVEXA supports the response process around your team, so promising conversations keep moving." />
+          <SectionHeading eyebrow="HOW IT WORKS" title="From New Lead to Booked Inspection." copy="BAVEXA responds, qualifies, follows up, and books roofing leads automatically—so your team can focus on closing jobs." />
         </div>
         <ol className="how-list">
           {howItWorks.map((step, index) => (
-            <li key={step.number}><span className="how-number">{step.number}</span><div className="how-icon">{[<PhoneMissed key="1" />, <MessageSquareText key="2" />, <SearchCheck key="3" />, <RefreshCw key="4" />, <CalendarCheck2 key="5" />][index]}</div><div><h3>{step.title}</h3><p>{step.copy}</p></div>{index < howItWorks.length - 1 ? <span className="how-line" /> : null}</li>
+            <li key={step.number}><span className="how-number">{step.number}</span><div className="how-icon">{[<PhoneMissed key="1" />, <MessageSquareText key="2" />, <SearchCheck key="3" />, <CalendarCheck2 key="4" />][index]}</div><div><h3>{step.title}</h3><p>{step.copy}</p></div>{index < howItWorks.length - 1 ? <span className="how-line" /> : null}</li>
           ))}
         </ol>
       </div>
@@ -185,38 +165,37 @@ export function DemoSection() {
   );
 }
 
-export function AudienceSection() {
+export function IntegrationsSection() {
   return (
-    <section className="section audience-section">
-      <div className="container audience-grid">
-        <div className="audience-copy">
-          <SectionHeading eyebrow="BUILT FOR ROOFING" title="Built for Roofing Companies That Want to Grow." copy="Whether you run a focused local team or operate across multiple locations, BAVEXA is designed around the way roofing opportunities arrive and move." />
-          <ul>{audiences.map((item) => <li key={item}><Check size={15} aria-hidden="true" />{item}</li>)}</ul>
-          <Button href="/contact">See where leads may be leaking</Button>
-        </div>
-        <aside className="booking-cta-card" aria-labelledby="booking-cta-title">
-          <div className="booking-cta-content">
-            <span className="booking-cta-kicker"><CalendarCheck2 size={16} aria-hidden="true" /> Speak With the Founder</span>
-            <h3 id="booking-cta-title">Let’s Find Where Your Roofing Leads Are Slipping Away.</h3>
-            <p>Book a free strategy call with Basit Amin Bhatti, Founder of BAVEXA, and explore how your lead response, qualification, follow-up, and inspection booking process could be improved.</p>
-          </div>
-          <div className="booking-cta-action">
-            <CalBookingButton />
-            <p><Check size={14} aria-hidden="true" /> Free strategy call <span aria-hidden="true">·</span> No obligation</p>
-          </div>
-        </aside>
+    <section className="section integrations-section">
+      <div className="container">
+        <SectionHeading align="center" eyebrow="CONNECTED WORKFLOWS" title="Works With the Tools Your Roofing Team Already Uses." copy="BAVEXA connects with your existing lead sources, messaging, CRM, scheduling, and automation tools—so you don’t have to rebuild your workflow." />
+        <div className="integration-row">{siteConfig.integrations.map((item, index) => { const Icon = integrationIcons[index]; return <div key={item}><Icon aria-hidden="true" /><span>{item}</span></div>; })}</div>
+        <p className="integration-note">Exact integrations are confirmed during your audit.</p>
       </div>
     </section>
   );
 }
 
-export function IntegrationsSection() {
+export function FounderContactSection() {
   return (
-    <section className="section integrations-section">
-      <div className="container">
-        <SectionHeading align="center" eyebrow="CONNECTED WORKFLOWS" title="Fits Into the Way Your Team Already Works." copy="BAVEXA connects capabilities around your existing lead process where supported—without implying a one-size-fits-all stack." />
-        <div className="integration-row">{siteConfig.integrations.map((item, index) => { const Icon = integrationIcons[index]; return <div key={item}><Icon aria-hidden="true" /><span>{item}</span></div>; })}</div>
-        <p className="integration-note">Exact connections are confirmed during your audit. No third-party partnership or platform support is implied here.</p>
+    <section className="section founder-contact-section" id="contact">
+      <div className="container founder-contact-grid">
+        <div className="founder-call-panel">
+          <span className="founder-contact-eyebrow"><CalendarCheck2 size={17} aria-hidden="true" /> SPEAK WITH THE FOUNDER</span>
+          <h2>Find Where Your Roofing Leads Are Slipping Away.</h2>
+          <p>Book a free strategy call with Basit Amin Bhatti, Founder of BAVEXA, and explore how your lead response, qualification, follow-up, and inspection booking process could be improved.</p>
+          <div className="founder-call-action">
+            <CalBookingButton className="button button-primary founder-contact-cta" />
+            <span><Check size={14} aria-hidden="true" /> 30 minutes <i aria-hidden="true">·</i> No obligation</span>
+          </div>
+        </div>
+        <div className="contact-message-card">
+          <span className="contact-message-eyebrow">CONTACT BAVEXA</span>
+          <h2>Send a Message.</h2>
+          <p>Tell us what you need help with and we’ll point you toward the right next step.</p>
+          <ContactMessageForm />
+        </div>
       </div>
     </section>
   );
@@ -224,8 +203,9 @@ export function IntegrationsSection() {
 
 export function FounderSection() {
   const founder = siteConfig.founder;
+
   return (
-    <section className="section founder-section" id="about">
+    <section className="section founder-section" id="founder">
       <div className="container founder-card">
         <FounderPortrait />
         <div className="founder-copy">
@@ -235,7 +215,13 @@ export function FounderSection() {
           <blockquote>“{founder.message}”</blockquote>
           <a href={founder.website} target="_blank" rel="noreferrer">{founder.cta}</a>
         </div>
-        <div className="founder-brand-relationship"><span>THE EXPERT</span><strong>Basit</strong><ArrowRight aria-hidden="true" /><span>THE SYSTEM</span><strong>BAVEXA</strong></div>
+        <div className="founder-brand-relationship" aria-hidden="true">
+          <span>THE EXPERT</span>
+          <strong>Basit</strong>
+          <ArrowRight />
+          <span>THE SYSTEM</span>
+          <strong>BAVEXA</strong>
+        </div>
       </div>
     </section>
   );

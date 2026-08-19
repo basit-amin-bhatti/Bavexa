@@ -3,11 +3,22 @@
 import { ArrowRight } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { getCalApi } from "@calcom/embed-react";
+import { siteConfig } from "@/content/site";
 
 const CAL_LINK = "basitaminbhatti/roofing-growth-call";
 const CAL_NAMESPACE = "roofing-growth-call";
 
-export function CalBookingButton() {
+type CalBookingButtonProps = {
+  arrow?: "right" | "external";
+  className?: string;
+  onBeforeOpen?: () => void;
+};
+
+export function CalBookingButton({
+  arrow = "right",
+  className,
+  onBeforeOpen,
+}: CalBookingButtonProps = {}) {
   const calApiPromise = useRef<ReturnType<typeof getCalApi> | null>(null);
   const [opening, setOpening] = useState(false);
   const [loadError, setLoadError] = useState(false);
@@ -36,6 +47,7 @@ export function CalBookingButton() {
   };
 
   const openBooking = async () => {
+    onBeforeOpen?.();
     setOpening(true);
     setLoadError(false);
 
@@ -56,6 +68,7 @@ export function CalBookingButton() {
   return (
     <>
       <button
+        className={className}
         type="button"
         aria-haspopup="dialog"
         aria-busy={opening}
@@ -64,8 +77,8 @@ export function CalBookingButton() {
         onPointerEnter={warmBooking}
         onFocus={warmBooking}
       >
-        <span>{opening ? "OPENING BOOKING CALENDAR…" : "BOOK A FREE ROOFING GROWTH CALL"}</span>
-        <ArrowRight size={18} aria-hidden="true" />
+        <span>{opening ? "OPENING BOOKING CALENDAR…" : siteConfig.ctas.primary}</span>
+        {arrow === "external" ? <span aria-hidden="true">↗</span> : <ArrowRight size={18} aria-hidden="true" />}
       </button>
       {loadError ? <span className="cal-booking-status" role="alert">The booking calendar could not load. Please try again.</span> : null}
     </>
