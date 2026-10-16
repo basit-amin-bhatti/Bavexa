@@ -7,7 +7,7 @@ export const siteConfig = {
   nav: [
     { label: "System", href: "/#system" },
     { label: "How It Works", href: "/#how-it-works" },
-    { label: "Demo", href: "/#demo" },
+    { label: "Live AI Demo", href: "/demo" },
     { label: "Founder", href: "/#founder" },
   ],
   ctas: {

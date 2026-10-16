@@ -2,7 +2,7 @@
 
 Production website for **BAVEXA — AI Lead Conversion System for Roofing Companies**.
 
-The site is built with Next.js App Router, React, TypeScript, Tailwind CSS, Motion, and Lucide icons. It includes a long-form conversion homepage, four public routes, an interactive ROI calculator, product workflow animation, demo modal, audit form endpoint, SEO files, and structured data.
+The site is built with Next.js App Router, React, TypeScript, Tailwind CSS, Motion, and Lucide icons. It includes a long-form conversion homepage, five public routes, an interactive ROI calculator, product workflow animation, demo modal, audit form endpoint, SEO files, and structured data.
 
 ## Local setup
 
@@ -15,6 +15,7 @@ For a production check:
 
 ```bash
 npm run lint
+npm run typecheck
 npm run test
 npm run build
 ```
@@ -39,13 +40,13 @@ Section-specific homepage copy is in `components/sections/HomeSections.tsx`. Rou
 
 ### Founder photo
 
-Add the real approved portrait at:
+The approved portrait is stored at:
 
 ```text
-public/images/founder.jpg
+public/images/founder.png
 ```
 
-The site currently uses a neutral monogram placeholder. After adding the approved portrait, set `founder.imageEnabled` to `true` in `content/site.ts`. Do not use a generated or unapproved founder photo. The founder path and all founder details are centrally configured in the same file.
+The portrait is enabled through `founder.imageEnabled` in `content/site.ts`. Replace it with an approved portrait using the same filename, or update the centrally configured founder image path. A neutral monogram is shown if the image is disabled or fails to load. Do not use a generated or unapproved founder photo.
 
 ### Roofing photography
 
@@ -58,7 +59,17 @@ public/images/roofing-inspection.jpg
 
 Use optimized landscape JPEG or WebP files with descriptive, roofing-specific imagery. Current photos are free-to-use Unsplash images.
 
-### Demo video
+### Live AI Demo page
+
+`/demo` introduces Mike and includes a voice interface placeholder. It does not load a voice SDK, access the microphone, or simulate calls. The start button remains a placeholder until the approved agent is connected.
+
+The interactive boundary is `components/demo/LiveAiDemo.tsx`. The three static automation cards in `app/demo/page.tsx` are always visible and the same card component is reused inside `PostCallPreviewModal`. Both locations clearly label their records as fictional sample integration previews. Styles are isolated in `components/demo/LiveDemo.module.css`.
+
+The voice panel is still a placeholder; there are no active agent callbacks in this checkout. When connecting the approved agent, call `reportMikeCallLifecycle` from `components/demo/callLifecycle.ts` exclusively from verified SDK lifecycle callbacks: `{ type: "connected", callId }` once the call connects, then `{ type: "disconnected", callId, outcome: "completed" }` after a clean hang-up. Use `"cancelled"` or `"error"` for other disconnects. Keep the same actual session identifier across both events. Never emit connection events from the Start button or on page load. The modal opens only for a connected, completed session, and ignores duplicate disconnects, errors, and pre-connection cancellation. These guards are tested in `tests/call-lifecycle.test.ts`.
+
+The final consultation button reuses `CalBookingButton` and its existing Cal.com modal.
+
+### Homepage demo video
 
 Add the final video at:
 
@@ -123,6 +134,7 @@ The calculator is an illustrative opportunity estimate. Its disclaimer must rema
 ## Routes
 
 - `/` — long-form homepage
+- `/demo` — Mike voice interface preview and sample automation results
 - `/contact`
 - `/privacy`
 - `/terms`
@@ -131,7 +143,7 @@ SEO support includes page metadata, canonical paths, Open Graph/Twitter metadata
 
 ## Launch checklist
 
-- Add the approved founder photo.
+- Connect the approved Mike voice agent and verified lifecycle callbacks before enabling live calls.
 - Add the final 60-second demo video and switch the modal to the video element.
 - Configure `LEAD_WEBHOOK_URL` and submit a real test lead.
 - Have qualified counsel review Privacy and Terms for the operating jurisdiction.

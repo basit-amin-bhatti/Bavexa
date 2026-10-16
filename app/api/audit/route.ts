@@ -5,7 +5,11 @@ const requiredFields = ["fullName", "company", "email", "phone", "monthlyLeadVol
 export async function POST(request: Request) {
   let payload: Record<string, unknown>;
   try {
-    payload = await request.json() as Record<string, unknown>;
+    const value: unknown = await request.json();
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return NextResponse.json({ message: "Please submit a valid form." }, { status: 400 });
+    }
+    payload = value as Record<string, unknown>;
   } catch {
     return NextResponse.json({ message: "Please submit a valid form." }, { status: 400 });
   }

@@ -9,12 +9,14 @@ const CAL_LINK = "basitaminbhatti/roofing-growth-call";
 const CAL_NAMESPACE = "roofing-growth-call";
 
 type CalBookingButtonProps = {
+  label?: string;
   arrow?: "right" | "external";
   className?: string;
   onBeforeOpen?: () => void;
 };
 
 export function CalBookingButton({
+  label = siteConfig.ctas.primary,
   arrow = "right",
   className,
   onBeforeOpen,
@@ -30,7 +32,10 @@ export function CalBookingButton({
           theme: "light",
           hideEventTypeDetails: false,
           layout: "month_view",
-          styles: { branding: { brandColor: "#1f71ff" } },
+          cssVarsPerTheme: {
+            light: { "cal-brand": "#1f71ff" },
+            dark: { "cal-brand": "#1f71ff" },
+          },
         });
         cal("preload", { calLink: CAL_LINK, type: "modal" });
         return cal;
@@ -77,7 +82,7 @@ export function CalBookingButton({
         onPointerEnter={warmBooking}
         onFocus={warmBooking}
       >
-        <span>{opening ? "OPENING BOOKING CALENDAR…" : siteConfig.ctas.primary}</span>
+        <span>{opening ? "OPENING BOOKING CALENDAR…" : label}</span>
         {arrow === "external" ? <span aria-hidden="true">↗</span> : <ArrowRight size={18} aria-hidden="true" />}
       </button>
       {loadError ? <span className="cal-booking-status" role="alert">The booking calendar could not load. Please try again.</span> : null}

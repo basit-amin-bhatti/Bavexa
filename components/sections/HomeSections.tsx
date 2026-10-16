@@ -41,7 +41,7 @@ export function HeroSection() {
   return (
     <section className="hero-section">
       <div className="hero-photo" aria-hidden="true">
-        <Image src="/images/roofing-hero.jpg" alt="" fill priority sizes="100vw" />
+        <Image src="/images/roofing-hero.jpg" alt="" fill priority sizes="(max-width: 900px) 100vw, 47vw" />
       </div>
       <div className="container hero-grid">
         <div className="hero-copy">
