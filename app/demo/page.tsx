@@ -84,7 +84,7 @@ export default function DemoPage() {
           <div className={styles.introCopy}>
             <p className={styles.heroEyebrow}><Headphones size={14} aria-hidden="true" /> THE BAVEXA VOICE EXPERIENCE</p>
             <h1 id="mike-title">Meet Mike — Your <br className={styles.desktopBreak} /><span>AI Roofing Receptionist</span></h1>
-            <p className={styles.subtitle}><span className={styles.desktopDescription}>Experience how BAVEXA answers roofing inquiries, qualifies leads, and helps book appointments — automatically, 24/7.</span><span className={styles.mobileDescription}>Meet your 24/7 AI receptionist for roofing inquiries, lead qualification, and inspection booking.</span></p>
+            <p className={styles.subtitle}><span className={`${styles.desktopDescription} ${styles.desktopExistingCopy}`}>Experience how BAVEXA answers roofing inquiries, qualifies leads, and helps book appointments — automatically, 24/7.</span><span className={styles.mobileDescription}>Meet your 24/7 AI receptionist for roofing inquiries, lead qualification, and inspection booking.</span><span className={styles.desktopRefinedCopy}>Try a real AI roofing conversation — from first question to inspection booking.</span></p>
             <p className={styles.introNote}>Explore the experience of speaking with an AI receptionist, from the first question to the next step.</p>
           </div>
         </div>

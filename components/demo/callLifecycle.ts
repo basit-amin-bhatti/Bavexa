@@ -34,3 +34,34 @@ export function createCompletedCallGate(onCompleted: (callId: string) => void): 
     if (wasConnected && event.outcome === "completed") onCompleted(event.callId);
   };
 }
+
+/** Maps verified SDK callbacks to the preview gate, suppressing failed/cancelled sessions. */
+export function createMikeCallSession(report: Listener = reportMikeCallLifecycle) {
+  let callId: string | null = null;
+  let failed = false;
+  let cancelled = false;
+  let disposed = false;
+
+  return {
+    activate() { disposed = false; },
+    begin() { callId = null; failed = false; cancelled = false; },
+    connect(id: string) {
+      if (disposed || cancelled || failed || !id.trim()) return;
+      callId = id;
+      report({ type: "connected", callId: id });
+    },
+    fail() { failed = true; },
+    cancel() { cancelled = true; },
+    dispose() { disposed = true; callId = null; },
+    disconnect(reason: "user" | "agent" | "error") {
+      const id = callId;
+      callId = null;
+      if (disposed || !id) return;
+      report({
+        type: "disconnected",
+        callId: id,
+        outcome: failed || reason === "error" ? "error" : cancelled ? "cancelled" : "completed",
+      });
+    },
+  };
+}

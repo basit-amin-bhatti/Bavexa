@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createCompletedCallGate, reportMikeCallLifecycle, subscribeToMikeCallLifecycle } from "../components/demo/callLifecycle";
+import { createCompletedCallGate, createMikeCallSession, reportMikeCallLifecycle, subscribeToMikeCallLifecycle } from "../components/demo/callLifecycle";
 
 test("does not open on initialization or a disconnect before connecting", () => {
   const completed: string[] = [];
@@ -49,4 +49,32 @@ test("the frontend bridge delivers events only to current subscribers", () => {
   reportMikeCallLifecycle({ type: "connected", callId: "unmounted" });
   reportMikeCallLifecycle({ type: "disconnected", callId: "unmounted", outcome: "completed" });
   assert.deepEqual(completed, ["live-session"]);
+});
+
+test("SDK sessions open previews only after a real connection and clean hang-up", () => {
+  const completed: string[] = [];
+  const session = createMikeCallSession(createCompletedCallGate(id => completed.push(id)));
+  session.begin();
+  session.disconnect("user");
+  assert.deepEqual(completed, []);
+  for (const reason of ["user", "agent"] as const) {
+    session.begin();
+    session.connect(`real-${reason}`);
+    session.disconnect(reason);
+    session.disconnect(reason);
+  }
+  assert.deepEqual(completed, ["real-user", "real-agent"]);
+});
+
+test("SDK errors, cancelled connection attempts, and unmounts never open previews", () => {
+  const completed: string[] = [];
+  const session = createMikeCallSession(createCompletedCallGate(id => completed.push(id)));
+  session.begin(); session.cancel(); session.connect("late-connection"); session.disconnect("user");
+  session.begin(); session.connect("network-failure"); session.disconnect("error");
+  session.begin(); session.connect("callback-failure"); session.fail(); session.disconnect("user");
+  session.begin(); session.fail(); session.connect("failed-start"); session.disconnect("user");
+  session.begin(); session.connect("navigation-away"); session.dispose(); session.disconnect("user");
+  assert.deepEqual(completed, []);
+  session.activate(); session.begin(); session.connect("retry"); session.disconnect("agent");
+  assert.deepEqual(completed, ["retry"]);
 });

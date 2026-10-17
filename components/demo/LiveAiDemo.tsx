@@ -1,8 +1,9 @@
 "use client";
 
-import { ArrowDown, ArrowRight, CalendarCheck2, Check, Database, Headphones, Info, MessageSquare, MessagesSquare, Mic, Sparkles, UserRoundCheck, UserRoundPlus } from "lucide-react";
+import { ArrowDown, ArrowRight, CalendarCheck2, Check, Database, Info, MessageSquare, MessagesSquare, Sparkles, UserRoundCheck, UserRoundPlus } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { PostCallPreviewModal } from "./PostCallPreviewModal";
+import { MikeVoiceAgent } from "./MikeVoiceAgent";
 import { createCompletedCallGate, subscribeToMikeCallLifecycle } from "./callLifecycle";
 import styles from "./LiveDemo.module.css";
 
@@ -21,20 +22,10 @@ const agentWorkflow = [
   { label: "CRM Updated", icon: Database },
 ];
 
-function MikeAgentPlaceholder() {
-  // Replace this isolated panel with the ElevenLabs widget once the agent is approved.
-  // No microphone access, recording, or simulated call is started by this placeholder.
+function MikeAgentPanel() {
   return (
     <div className={styles.agentPanel}>
-      <div className={styles.agentBar}><span><Headphones size={14} aria-hidden="true" /> BAVEXA / MIKE</span><span className={styles.previewBadge}>INTERFACE PREVIEW</span></div>
-      <div className={styles.agentBody}>
-        <div className={styles.avatar} aria-hidden="true"><span className={styles.avatarRing} /><span className={styles.avatarCore}><Mic size={36} strokeWidth={1.5} /></span></div>
-        <h2>Hey, I’m Mike.</h2>
-        <p>BAVEXA’s AI Roofing Receptionist.</p>
-        <div className={styles.voiceBars} aria-hidden="true">{[8, 15, 23, 13, 31, 42, 24, 17, 34, 25, 13, 21, 9].map((height, index) => <i key={index} style={{ height }} />)}</div>
-        <button className={`button button-primary ${styles.talkButton}`} type="button" aria-describedby="mike-microphone-note"><Mic size={17} aria-hidden="true" /><span>Talk to Mike — Start Free Demo</span></button>
-        <p className={styles.microphoneNote} id="mike-microphone-note">No signup required. Use your microphone to talk with Mike.</p>
-      </div>
+      <MikeVoiceAgent />
       <ol className={styles.agentFooter} aria-label="BAVEXA lead conversion workflow">
         {agentWorkflow.map(({ label, icon: Icon }, index) => (
           <li key={label} className={styles.workflowStep}>
@@ -58,20 +49,20 @@ export function LiveAiDemo({ examples }: { examples: ReactNode }) {
 
   return (
     <>
-      <section className={styles.experience} aria-label="Mike voice demo preview">
+      <section className={styles.experience} aria-label="Mike live voice demo">
         <div className="container">
           <div className={styles.workspace}>
-            <MikeAgentPlaceholder />
+            <MikeAgentPanel />
             <div className={styles.conversationGuide}>
-              <p className={styles.heroEyebrow}>A CONVERSATION, NOT A CONTACT FORM</p>
+              <p className={`${styles.heroEyebrow} ${styles.desktopExistingCopy}`}>A CONVERSATION, NOT A CONTACT FORM</p>
               <h2>A helpful first response.<br /><span>A clear next step.</span></h2>
               <ul className={styles.capabilities}>
-                <li><Check size={15} aria-hidden="true" /> Answers common roofing enquiries</li>
-                <li><Check size={15} aria-hidden="true" /> Captures property, issue, and timeline</li>
-                <li><Check size={15} aria-hidden="true" /> Helps find a suitable inspection time</li>
+                <li><Check size={15} aria-hidden="true" /><span className={styles.desktopExistingCopy}>Answers common roofing enquiries</span><span className={styles.desktopRefinedCopy}>Answers roofing questions</span></li>
+                <li><Check size={15} aria-hidden="true" /><span className={styles.desktopExistingCopy}>Captures property, issue, and timeline</span><span className={styles.desktopRefinedCopy}>Captures key lead details</span></li>
+                <li><Check size={15} aria-hidden="true" /><span className={styles.desktopExistingCopy}>Helps find a suitable inspection time</span><span className={styles.desktopRefinedCopy}>Helps book inspections</span></li>
               </ul>
               <div className={styles.questionList}><span>TRY ASKING MIKE</span>{sampleQuestions.map((question) => <p key={question}><span aria-hidden="true">“</span>{question}<span aria-hidden="true">”</span></p>)}</div>
-              <p className={styles.disclosure}><Info size={16} aria-hidden="true" /><span>Mike is an AI assistant demonstrating a fictional roofing company. This demo does not provide roofing diagnoses or book real inspections.</span></p>
+              <p className={styles.disclosure}><Info size={16} aria-hidden="true" /><span className={styles.desktopExistingCopy}>Mike is an AI assistant demonstrating a fictional roofing company. This demo does not provide roofing diagnoses or book real inspections.</span><span className={styles.desktopRefinedCopy}>AI demo for a fictional roofing company. No roofing diagnoses or real inspection bookings.</span></p>
             </div>
           </div>
           <div className={styles.experienceBridge}><span>THE CONVERSATION IS JUST THE START</span><ArrowDown size={16} aria-hidden="true" /></div>

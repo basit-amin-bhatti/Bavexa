@@ -61,11 +61,17 @@ Use optimized landscape JPEG or WebP files with descriptive, roofing-specific im
 
 ### Live AI Demo page
 
-`/demo` introduces Mike and includes a voice interface placeholder. It does not load a voice SDK, access the microphone, or simulate calls. The start button remains a placeholder until the approved agent is connected.
+`/demo` connects to Mike through the official `@elevenlabs/react` SDK in `components/demo/MikeVoiceAgent.tsx`. The supplied public agent ID is configured there. No API key is sent to the browser, and no floating widget is loaded. The browser requests microphone access only after the visitor clicks **Talk to Mike**; a brief permission preflight releases its tracks before the SDK owns the call’s media. The existing interface includes End Call, Mute/Unmute, speaking/listening states, connection cancellation, a connection timeout, and friendly permission/device/network errors. The SDK releases the conversation and microphone when the component unmounts.
 
 The interactive boundary is `components/demo/LiveAiDemo.tsx`. The three static automation cards in `app/demo/page.tsx` are always visible and the same card component is reused inside `PostCallPreviewModal`. Both locations clearly label their records as fictional sample integration previews. Styles are isolated in `components/demo/LiveDemo.module.css`.
 
-The voice panel is still a placeholder; there are no active agent callbacks in this checkout. When connecting the approved agent, call `reportMikeCallLifecycle` from `components/demo/callLifecycle.ts` exclusively from verified SDK lifecycle callbacks: `{ type: "connected", callId }` once the call connects, then `{ type: "disconnected", callId, outcome: "completed" }` after a clean hang-up. Use `"cancelled"` or `"error"` for other disconnects. Keep the same actual session identifier across both events. Never emit connection events from the Start button or on page load. The modal opens only for a connected, completed session, and ignores duplicate disconnects, errors, and pre-connection cancellation. These guards are tested in `tests/call-lifecycle.test.ts`.
+`createMikeCallSession` in `components/demo/callLifecycle.ts` forwards verified SDK connection/disconnect callbacks using the actual conversation ID. The sample-results modal opens once after a connected call ends normally (visitor or agent hang-up), never on page load, errors, connection cancellation, or navigation away. These guards and public error messages are covered by tests. The cards remain fictional samples, not data from the call; this frontend does not write to a spreadsheet, calendar, or CRM.
+
+The agent must allow public conversations from the deployed site’s origin. Check its authentication and domain allowlist in the agent dashboard if connections are rejected. An authenticated agent would require a server-issued conversation token; never add a private API key to client code. Production microphone access requires HTTPS (localhost is permitted for development). Test in a browser with an actual microphone before launch. Existing remote agent tools, prompts, and webhook integrations are not changed by this integration.
+
+For local testing, retain `bavexa.vercel.app` and add `localhost:3000` as a separate hostname in the agent’s **Security → Allowlist**. Enter the hostname with port, not `http://` or `/demo`. Do not disable the allowlist. A successful token request alone does not prove that the browser origin is allowed or that a voice call connected.
+
+Some embedded preview browsers do not expose microphone APIs. If the demo reports an unsupported browser, open `http://localhost:3000/demo` in Chrome or Edge for the real audio test. Never bypass browser permissions or claim a call succeeded based only on sample cards or a token response.
 
 The final consultation button reuses `CalBookingButton` and its existing Cal.com modal.
 
@@ -90,6 +96,8 @@ LEAD_WEBHOOK_URL=https://your-secure-webhook.example
 Submissions are posted as JSON through `app/api/audit/route.ts`. The endpoint validates required fields, validates email format, includes a honeypot, and forwards the request to the configured webhook. If no webhook is configured, the UI shows an honest configuration error and does not fake success.
 
 Hosted deployments should configure `LEAD_WEBHOOK_URL` as a runtime secret rather than committing it.
+
+The audit endpoint accepts same-origin JSON, caps request bodies at 16 KiB, validates field lengths and website protocols, and forwards only documented fields. The destination must be HTTPS; redirects are rejected and requests time out after eight seconds. Optionally set `LEAD_WEBHOOK_SECRET` (at least 32 random characters) and configure the receiver to verify its `X-Bavexa-Webhook-Secret` header. Provider details and secret values are never returned to visitors. Configure distributed rate limiting at the hosting/WAF layer before public use; origin checks and a honeypot are not bot authentication.
 
 ### Integrations
 
@@ -143,9 +151,13 @@ SEO support includes page metadata, canonical paths, Open Graph/Twitter metadata
 
 ## Launch checklist
 
-- Connect the approved Mike voice agent and verified lifecycle callbacks before enabling live calls.
+- Verify a live Mike call on the production HTTPS domain with microphone permissions, mute, hang-up, and the sample-results popup.
 - Add the final 60-second demo video and switch the modal to the video element.
 - Configure `LEAD_WEBHOOK_URL` and submit a real test lead.
 - Have qualified counsel review Privacy and Terms for the operating jurisdiction.
 - Confirm each named integration before publishing vendor-specific claims.
 - Add only approved customer proof.
+
+## Security review
+
+See `SECURITY_REVIEW.md` for the latest findings, residual development-only advisory, and account-level checks still required before production. Run `npm run security:scan` to scan working-tree text and local Git history for common private credential patterns without printing values. This heuristic check cannot inspect Vercel secrets, hosted account settings, or guarantee that a secret has never appeared in GitHub.
