@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createVoiceConnectionAttempt, getVoiceFailureDiagnostic } from "../components/demo/voiceConnection";
+import { MIKE_CONNECTION_TYPE, createVoiceConnectionAttempt, getVoiceFailureDiagnostic } from "../components/demo/voiceConnection";
+
+test("Mike explicitly selects the SDK WebSocket voice transport", () => {
+  assert.equal(MIKE_CONNECTION_TYPE, "websocket");
+});
 
 test("awaits the real connected callback rather than a void SDK return", async () => {
   const connection = createVoiceConnectionAttempt();
@@ -40,10 +44,18 @@ test("cancellation rejects a pending connection and a later retry can connect", 
 
 test("console diagnostics retain failure category/status without exposing provider payloads", () => {
   const diagnostic = getVoiceFailureDiagnostic(new Error("Failed to fetch conversation token: API returned 403 https://example.test/?token=private-credential"), "connecting");
-  assert.deepEqual(diagnostic, { stage: "connecting", transport: "webrtc", category: "token-request", httpStatus: 403 });
+  assert.deepEqual(diagnostic, { stage: "connecting", transport: "websocket", category: "token-request", httpStatus: 403 });
   assert.doesNotMatch(JSON.stringify(diagnostic), /private|example|token=/);
   assert.equal(getVoiceFailureDiagnostic("ICE connection failed", "connecting").category, "webrtc");
   assert.deepEqual(getVoiceFailureDiagnostic("WebRTC signaling closed", "connected", { reason: "agent", context: { type: "close", code: 1006 } }), {
-    stage: "connected", transport: "webrtc", category: "webrtc", sdkDisconnectReason: "agent", context: "close", closeCode: 1006,
+    stage: "connected", transport: "websocket", category: "webrtc", sdkDisconnectReason: "agent", context: "close", closeCode: 1006,
   });
+});
+
+test("WebSocket startup errors retain the actual close code without exposing close reasons", () => {
+  const problem = Object.assign(new Error("Connection closed unexpectedly before session could be established."), { closeCode: 1008, closeReason: "private provider detail" });
+  assert.deepEqual(getVoiceFailureDiagnostic(problem, "connecting"), {
+    stage: "connecting", transport: "websocket", category: "websocket", closeCode: 1008,
+  });
+  assert.doesNotMatch(JSON.stringify(getVoiceFailureDiagnostic(problem, "connecting")), /private provider/);
 });

@@ -14,6 +14,12 @@
 3. **Startup promise handling:** React SDK 1.18's hook returns void. A lifecycle adapter awaits verified callbacks and propagates synchronous/startup errors, instead of pretending `await` on a void return observes negotiation. SDK startup rejection clears its own lock. Retry does not replace a negotiating provider.
 4. **False completion popup:** the installed WebRTC adapter maps a generic room disconnect to `reason: "agent"`; later error events can be ignored by its one-shot disconnect handler. BAVEXA previously discarded context and counted all such agent disconnects as success. The gate now requires both user/agent activity plus an explicit visitor hang-up or agent `end_call`; generic close, abnormal code, errors, cancellation and unmount never count as completion. Only boolean activity flags are retained.
 
+## Owner-directed WebSocket voice transport
+
+Following repeated owner-confirmed WebRTC 1006 failures after token issuance and HTTP 101, Mike now explicitly uses `connectionType: "websocket"` with the same public agent ID. This selects the SDK's voice WebSocket input/output pipeline, not text-only mode, and does not fetch a LiveKit conversation token or negotiate peer connections. Existing SDK microphone, playback, mute and end controls are retained. No authentication, domain restriction, server integration, or UI setting was changed.
+
+Safe diagnostics now identify the selected WebSocket transport and retain startup `SessionConnectionError.closeCode`, without logging tokens, transcripts or raw close reasons. Regression tests cover the explicit transport selection and failed WebSocket closes (1006/1008/1011) never opening the sample-results popup. This is an owner-requested transport change, not a claim that the original WebRTC signaling cause has been proven.
+
 ## Production verification still required
 
 These changes were initially verified locally. A successful deployment alone does not prove that the initial remote signaling failure is fixed. In Chrome on the production hostname after deployment, inspect the ordered `[BAVEXA voice] Lifecycle` events and the first Network/SDK failure:

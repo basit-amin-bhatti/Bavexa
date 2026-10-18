@@ -1,3 +1,6 @@
+/** Keep the SDK start options and safe diagnostics on the same explicit voice transport. */
+export const MIKE_CONNECTION_TYPE = "websocket" as const;
+
 /** React SDK 1.18 startSession returns void. Await its verified lifecycle, not that void return. */
 export function createVoiceConnectionAttempt() {
   let pending: { promise: Promise<void>; resolve: () => void; reject: (problem: unknown) => void } | null = null;
@@ -42,16 +45,19 @@ export function getVoiceFailureDiagnostic(problem: unknown, stage: string, disco
   const category = /notallowed|permission|denied|notfound|notreadable/.test(detail) ? "microphone"
     : /secure context|unsupported/.test(detail) ? "browser"
     : /conversation token|signed url/.test(detail) ? "token-request"
+    : /websocket|socket error|connection.*closed/.test(detail) ? "websocket"
     : /\bice\b|peerconnection|webrtc|signall?ing|\brtc\b|\broom\b/.test(detail) ? "webrtc"
     : /timeout|timed out/.test(detail) ? "timeout"
     : /network|offline|fetch/.test(detail) ? "network" : "sdk";
-  const closeCode = disconnect?.closeCode ?? disconnect?.context?.code;
+  // Startup SessionConnectionError carries its code on the error, before onDisconnect exists.
+  const startupCode = problem instanceof Error && "closeCode" in problem ? problem.closeCode : undefined;
+  const closeCode = disconnect?.closeCode ?? disconnect?.context?.code ?? startupCode;
   const context = disconnect?.context?.type;
   return {
-    stage, transport: "webrtc", category,
+    stage, transport: MIKE_CONNECTION_TYPE, category,
     ...(status ? { httpStatus: Number(status) } : {}),
     ...(disconnect ? { sdkDisconnectReason: disconnect.reason } : {}),
     ...(context && ["close", "end_call", "connection_state_changed"].includes(context) ? { context } : {}),
-    ...(Number.isInteger(closeCode) ? { closeCode } : {}),
+    ...(typeof closeCode === "number" && Number.isInteger(closeCode) ? { closeCode } : {}),
   };
 }

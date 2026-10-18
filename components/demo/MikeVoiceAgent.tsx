@@ -5,7 +5,7 @@ import { Headphones, LoaderCircle, Mic, MicOff, PhoneOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createMikeCallSession } from "./callLifecycle";
 import { getVoiceErrorMessage } from "./voiceErrors";
-import { createVoiceConnectionAttempt, getVoiceFailureDiagnostic } from "./voiceConnection";
+import { MIKE_CONNECTION_TYPE, createVoiceConnectionAttempt, getVoiceFailureDiagnostic } from "./voiceConnection";
 import styles from "./LiveDemo.module.css";
 
 const MIKE_AGENT_ID = "agent_9101m53fkprcfhj9maxv0cxskq9v";
@@ -84,7 +84,7 @@ function MikeVoiceSession({ error, onReset, onClearError }: {
       onDisconnect={(details) => {
         logLifecycle("sdk-disconnected");
         const outcome = session.current.disconnect(details);
-        if (outcome === "error" || details.reason === "error") handleFailure(details.reason === "error" ? details.message : "WebRTC signaling connection closed unexpectedly", details);
+        if (outcome === "error" || details.reason === "error") handleFailure(details.reason === "error" ? details.message : "WebSocket connection closed unexpectedly", details);
         else if (connection.current.pending) handleFailure("Connection closed before connecting");
         setPhase("idle");
       }}
@@ -162,7 +162,7 @@ function MikeVoiceControls({ phase, transportStatus, error, onStart, startConnec
       // The installed SDK requests microphone permission before creating a connection,
       // and owns/reclaims its tracks. Do not run a second capture/stop cycle here.
       // The React hook returns void; this promise rejects from onError or a failed disconnect.
-      await startConnection(() => startSession({ agentId: MIKE_AGENT_ID, connectionType: "webrtc" }));
+      await startConnection(() => startSession({ agentId: MIKE_AGENT_ID, connectionType: MIKE_CONNECTION_TYPE }));
     } catch (problem) {
       if (active.current && !(problem instanceof DOMException && problem.name === "AbortError")) onFailure(problem);
     } finally {

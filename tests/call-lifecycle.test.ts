@@ -108,3 +108,18 @@ test("abnormal close and errors override conversation activity and intended hang
   }
   assert.deepEqual(completed, []);
 });
+
+test("WebSocket failures and pre-conversation closes never open sample results", () => {
+  const completed: string[] = [];
+  const session = createMikeCallSession(createCompletedCallGate(id => completed.push(id)));
+  for (const code of [1006, 1008, 1011]) {
+    session.begin(); session.connect(`websocket-${code}`);
+    session.message("agent"); session.message("user");
+    session.disconnect({ reason: "error", context: { type: "close", code }, closeCode: code });
+  }
+  session.begin();
+  session.disconnect({ reason: "error", closeCode: 1006 });
+  session.begin(); session.connect("early-normal-close");
+  session.disconnect({ reason: "agent", context: { type: "close", code: 1000 } });
+  assert.deepEqual(completed, []);
+});
