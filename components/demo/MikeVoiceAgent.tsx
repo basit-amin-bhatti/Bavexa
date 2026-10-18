@@ -1,23 +1,22 @@
 "use client";
 
-import { ConversationProvider, useConversationControls, useConversationInput, useConversationMode, useConversationStatus } from "@elevenlabs/react";
+import { ConversationProvider, useConversationControls, useConversationInput, useConversationMode, type Status } from "@elevenlabs/react";
 import { Headphones, LoaderCircle, Mic, MicOff, PhoneOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createMikeCallSession } from "./callLifecycle";
 import { getVoiceErrorMessage } from "./voiceErrors";
+import { createVoiceConnectionAttempt, getVoiceFailureDiagnostic } from "./voiceConnection";
 import styles from "./LiveDemo.module.css";
 
 const MIKE_AGENT_ID = "agent_9101m53fkprcfhj9maxv0cxskq9v";
 type Phase = "idle" | "starting" | "ending";
 
 export function MikeVoiceAgent() {
-  const [attempt, setAttempt] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const reset = useCallback((message: string | null) => {
     setError(message);
-    setAttempt(value => value + 1);
   }, []);
-  return <MikeVoiceSession key={attempt} error={error} onReset={reset} onClearError={() => setError(null)} />;
+  return <MikeVoiceSession error={error} onReset={reset} onClearError={() => setError(null)} />;
 }
 
 function MikeVoiceSession({ error, onReset, onClearError }: {
@@ -26,68 +25,115 @@ function MikeVoiceSession({ error, onReset, onClearError }: {
   onClearError: () => void;
 }) {
   const session = useRef(createMikeCallSession());
+  const connection = useRef(createVoiceConnectionAttempt());
+  const failureHandled = useRef(false);
+  const stage = useRef("idle");
+  const startedAt = useRef(0);
   const mounted = useRef(true);
   const [phase, setPhase] = useState<Phase>("idle");
+  const [transportStatus, setTransportStatus] = useState<Status>("disconnected");
+  const transportRef = useRef<Status>("disconnected");
+
+  const logLifecycle = useCallback((event: string) => {
+    console.info("[BAVEXA voice] Lifecycle", JSON.stringify({ event, stage: stage.current, elapsedMs: startedAt.current ? Math.round(performance.now() - startedAt.current) : 0 }));
+  }, []);
 
   useEffect(() => {
     const current = session.current;
+    const attempt = connection.current;
     mounted.current = true;
     current.activate();
-    return () => { mounted.current = false; current.dispose(); };
-  }, []);
+    return () => {
+      if (startedAt.current) logLifecycle("provider-unmount");
+      mounted.current = false; current.dispose(); attempt.cancel();
+    };
+  }, [logLifecycle]);
 
-  const handleFailure = useCallback((problem: unknown) => {
-    if (!mounted.current) return;
+  const handleFailure = useCallback((problem: unknown, disconnect?: Parameters<typeof getVoiceFailureDiagnostic>[2]) => {
+    if (!mounted.current || failureHandled.current) return;
+    failureHandled.current = true;
     session.current.fail();
-    // A fresh provider clears any pending SDK lock, making retry/cancel reliable.
-    // Its cleanup ends the old session and releases owned media tracks.
+    connection.current.fail(problem);
+    if (transportRef.current === "disconnected") setPhase("idle");
+    logLifecycle("sdk-error");
+    console.error("[BAVEXA voice] Connection failure", JSON.stringify(getVoiceFailureDiagnostic(problem, stage.current, disconnect)));
+    // An SDK error is not a request to unmount/end the provider. In particular,
+    // callbacks may fire while negotiation or SDK teardown is still in flight.
+    // Let the SDK settle; only explicit hang-up/cancel/timeout requests teardown.
     onReset(getVoiceErrorMessage(problem));
-  }, [onReset]);
+  }, [onReset, logLifecycle]);
+
+  const handleEnd = useCallback((connected: boolean) => {
+    logLifecycle(connected ? "user-end-request" : "cancel-request");
+    stage.current = "ending";
+    setPhase("ending");
+    if (!connected) { session.current.cancel(); connection.current.cancel(); }
+    else session.current.requestEnd();
+  }, [logLifecycle]);
 
   return (
     <ConversationProvider
       onConnect={({ conversationId }) => {
+        if (!conversationId.trim()) { handleFailure("Missing conversation identifier"); return; }
         session.current.connect(conversationId);
+        stage.current = "connected";
+        logLifecycle("sdk-connected");
+        connection.current.connected();
         setPhase("idle");
       }}
       onDisconnect={(details) => {
-        session.current.disconnect(details.reason);
-        if (details.reason === "error") handleFailure(details.message);
+        logLifecycle("sdk-disconnected");
+        const outcome = session.current.disconnect(details);
+        if (outcome === "error" || details.reason === "error") handleFailure(details.reason === "error" ? details.message : "WebRTC signaling connection closed unexpectedly", details);
+        else if (connection.current.pending) handleFailure("Connection closed before connecting");
         setPhase("idle");
       }}
+      onMessage={({ role, message }) => {
+        if (message.trim()) session.current.message(role);
+      }}
       onStatusChange={({ status }) => {
+        transportRef.current = status;
+        setTransportStatus(status);
+        logLifecycle(`sdk-status-${status}`);
         if (status === "disconnected") setPhase("idle");
       }}
       onError={(message, context: unknown) => handleFailure(context instanceof Error ? context : message)}
     >
       <MikeVoiceControls
         phase={phase}
+        transportStatus={transportStatus}
         error={error}
-        onStart={() => { session.current.begin(); onClearError(); setPhase("starting"); }}
-        onEnd={(connected) => {
-          if (!connected) { session.current.cancel(); onReset(null); }
-          else setPhase("ending");
+        onStart={() => {
+          startedAt.current = performance.now(); failureHandled.current = false;
+          stage.current = "starting"; logLifecycle("start-request");
+          session.current.begin(); onClearError(); setPhase("starting");
         }}
+        startConnection={(startSession) => {
+          stage.current = "connecting";
+          return connection.current.start(startSession);
+        }}
+        onEnd={handleEnd}
         onFailure={handleFailure}
       />
     </ConversationProvider>
   );
 }
 
-function MikeVoiceControls({ phase, error, onStart, onEnd, onFailure }: {
+function MikeVoiceControls({ phase, transportStatus, error, onStart, startConnection, onEnd, onFailure }: {
   phase: Phase;
+  transportStatus: Status;
   error: string | null;
   onStart: () => void;
+  startConnection: (startSession: () => void) => Promise<void>;
   onEnd: (connected: boolean) => void;
   onFailure: (problem: unknown) => void;
 }) {
   const { startSession, endSession } = useConversationControls();
-  const { status } = useConversationStatus();
   const { isMuted, setMuted } = useConversationInput();
   const { isSpeaking } = useConversationMode();
-  const starting = phase === "starting" || status === "connecting";
+  const starting = phase === "starting" || transportStatus === "connecting";
   const ending = phase === "ending";
-  const connected = status === "connected";
+  const connected = transportStatus === "connected";
   const startLock = useRef(false);
   const active = useRef(true);
 
@@ -100,10 +146,11 @@ function MikeVoiceControls({ phase, error, onStart, onEnd, onFailure }: {
     if (phase !== "starting") return;
     const timeout = window.setTimeout(() => {
       onFailure("Connection timed out");
+      onEnd(false);
       endSession();
     }, 30_000);
     return () => window.clearTimeout(timeout);
-  }, [phase, endSession, onFailure]);
+  }, [phase, endSession, onFailure, onEnd]);
 
   const start = async () => {
     if (startLock.current || connected || starting || ending) return;
@@ -112,14 +159,12 @@ function MikeVoiceControls({ phase, error, onStart, onEnd, onFailure }: {
     try {
       if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) throw new Error("Unsupported secure context");
       if (!navigator.onLine) throw new Error("Network offline");
-      // Ask before opening a paid session; release this preflight stream immediately.
-      // The SDK owns the actual call's media tracks and their cleanup.
-      const microphone = await navigator.mediaDevices.getUserMedia({ audio: true });
-      microphone.getTracks().forEach(track => track.stop());
-      if (!active.current) return; // Cancelled, timed out, or navigated away during the prompt.
-      startSession({ agentId: MIKE_AGENT_ID, connectionType: "webrtc" });
+      // The installed SDK requests microphone permission before creating a connection,
+      // and owns/reclaims its tracks. Do not run a second capture/stop cycle here.
+      // The React hook returns void; this promise rejects from onError or a failed disconnect.
+      await startConnection(() => startSession({ agentId: MIKE_AGENT_ID, connectionType: "webrtc" }));
     } catch (problem) {
-      onFailure(problem);
+      if (active.current && !(problem instanceof DOMException && problem.name === "AbortError")) onFailure(problem);
     } finally {
       // The SDK also guards duplicate in-flight starts.
       startLock.current = false;
@@ -132,7 +177,7 @@ function MikeVoiceControls({ phase, error, onStart, onEnd, onFailure }: {
   };
 
   const toggleMute = () => {
-    try { setMuted(!isMuted); } catch (problem) { onFailure(problem); endSession(); }
+    try { setMuted(!isMuted); } catch (problem) { onFailure(problem); }
   };
 
   const stateLabel = ending ? "ENDING CALL" : starting ? "CONNECTING" : connected ? isSpeaking ? "MIKE IS SPEAKING" : isMuted ? "MICROPHONE MUTED" : "LISTENING TO YOU" : "READY TO TALK";
