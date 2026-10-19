@@ -2,21 +2,46 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { Menu, Mic, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CalBookingButton } from "@/components/CalBookingButton";
 import { siteConfig } from "@/content/site";
+import { createMobileNavigationHistory } from "@/lib/mobile-navigation";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [menuPortalReady, setMenuPortalReady] = useState(false);
-  const isDemo = usePathname() === "/demo";
+  const menuHistory = useRef<ReturnType<typeof createMobileNavigationHistory> | null>(null);
+  const scrollLocked = useRef(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenu = useCallback(() => {
+    menuHistory.current?.close();
+    setOpen(false);
+  }, []);
+
+  const closeForNavigation = () => {
+    menuHistory.current?.prepareNavigation();
+    setOpen(false);
+  };
 
   useEffect(() => {
-    const updateHeaderState = () => setScrolled(window.scrollY > 24);
+    const controller = createMobileNavigationHistory(window.history, () => setOpen(false));
+    menuHistory.current = controller;
+    window.addEventListener("popstate", controller.handlePopState);
+    return () => {
+      controller.prepareNavigation();
+      window.removeEventListener("popstate", controller.handlePopState);
+      menuHistory.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateHeaderState = () => {
+      if (!scrollLocked.current) setScrolled(window.scrollY > 24);
+    };
 
     updateHeaderState();
     window.addEventListener("scroll", updateHeaderState, { passive: true });
@@ -27,49 +52,91 @@ export function Header() {
   useEffect(() => {
     if (!open) return;
 
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousPageOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+    const body = document.body;
+    const page = document.documentElement;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const previousBody = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      width: body.style.width,
     };
-    window.addEventListener("keydown", handleEscape);
+    const previousPageOverflow = page.style.overflow;
+    const previousGutter = page.style.scrollbarGutter;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const background = [...document.querySelectorAll<HTMLElement>("#main-content, footer, .skip-link")];
+    const previousInert = background.map((element) => element.inert);
+    const navigation = document.getElementById("mobile-navigation");
+
+    scrollLocked.current = true;
+    page.style.scrollbarGutter = "stable";
+    page.style.overflow = "hidden";
+    Object.assign(body.style, {
+      overflow: "hidden", position: "fixed", top: `-${scrollY}px`, left: `-${scrollX}px`, width: "100%",
+    });
+    background.forEach((element) => { element.inert = true; });
+    const focusFrame = requestAnimationFrame(() => navigation?.querySelector("a")?.focus({ preventScroll: true }));
+
+    const handleKeyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMenu();
+      }
+      if (event.key !== "Tab") return;
+      const controls = [toggleRef.current, ...navigation?.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)") ?? []].filter((element): element is HTMLElement => Boolean(element));
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyboard);
 
     return () => {
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousPageOverflow;
-      window.removeEventListener("keydown", handleEscape);
+      cancelAnimationFrame(focusFrame);
+      Object.assign(body.style, previousBody);
+      page.style.overflow = previousPageOverflow;
+      page.style.scrollbarGutter = previousGutter;
+      background.forEach((element, index) => { element.inert = previousInert[index]; });
+      window.scrollTo({ left: scrollX, top: scrollY, behavior: "instant" });
+      scrollLocked.current = false;
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+      window.removeEventListener("keydown", handleKeyboard);
     };
-  }, [open]);
+  }, [open, closeMenu]);
 
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 901px)");
     const closeAtDesktop = (event: MediaQueryListEvent) => {
-      if (event.matches) setOpen(false);
+      if (event.matches) closeMenu();
     };
 
     desktopQuery.addEventListener("change", closeAtDesktop);
     return () => desktopQuery.removeEventListener("change", closeAtDesktop);
-  }, []);
+  }, [closeMenu]);
 
-  // Keep the demo menu outside the header's backdrop-filter containing block.
+  // Keep mobile overlays outside the header's backdrop-filter containing block.
   // The first menu interaction enables the portal without changing server HTML.
   const mobileNavigation = (
     <>
       <button
-        className={`mobile-nav-backdrop ${isDemo ? "demo-nav-backdrop" : ""} ${open ? "mobile-nav-backdrop-open" : ""}`}
+        className={`mobile-nav-backdrop ${open ? "mobile-nav-backdrop-open" : ""}`}
         type="button"
-        aria-label="Close navigation"
+        aria-label="Close navigation backdrop"
         aria-hidden={!open}
         tabIndex={open ? 0 : -1}
-        onClick={() => setOpen(false)}
+        onClick={closeMenu}
       />
 
-      <div id="mobile-navigation" className={`mobile-nav ${isDemo ? "demo-mobile-nav" : ""} ${isDemo && scrolled ? "demo-mobile-nav-scrolled" : ""} ${open ? "mobile-nav-open" : ""}`} aria-hidden={!open}>
+      <div id="mobile-navigation" className={`mobile-nav ${scrolled ? "mobile-nav-scrolled" : ""} ${open ? "mobile-nav-open" : ""}`} aria-hidden={!open} inert={!open}>
         <nav aria-label="Mobile navigation">
-          <Link href="/" onClick={() => setOpen(false)}>Home</Link>
+          <Link href="/" replace onNavigate={closeForNavigation}>Home</Link>
           {siteConfig.nav.map((item) => {
             const isLiveAiDemo = item.href === "/demo";
 
@@ -78,14 +145,15 @@ export function Header() {
                 key={item.href}
                 className={isLiveAiDemo ? "nav-live-demo" : undefined}
                 href={item.href}
-                onClick={() => setOpen(false)}
+                replace
+                onNavigate={closeForNavigation}
               >
                 {isLiveAiDemo ? <Mic aria-hidden="true" /> : null}
                 {isLiveAiDemo ? "Live AI Demo" : item.label}
               </Link>
             );
           })}
-          <CalBookingButton className="button button-primary" onBeforeOpen={() => setOpen(false)} />
+          <CalBookingButton className="button button-primary" onBeforeOpen={closeMenu} />
         </nav>
       </div>
     </>
@@ -93,10 +161,10 @@ export function Header() {
 
   return (
     <>
-    {isDemo && open ? <div className="demo-header-spacer" aria-hidden="true" /> : null}
-    <header className={`site-header ${scrolled ? "site-header-scrolled" : ""} ${isDemo && open ? "demo-menu-open" : ""}`}>
+    {open ? <div className="mobile-header-spacer" aria-hidden="true" /> : null}
+    <header className={`site-header ${scrolled ? "site-header-scrolled" : ""} ${open ? "mobile-menu-open" : ""}`}>
       <div className="container nav-shell">
-        <Link className="brand" href="/" aria-label="BAVEXA home" onClick={() => setOpen(false)}>
+        <Link className="brand" href="/" aria-label="BAVEXA home" replace={open} onNavigate={closeForNavigation}>
           <Image
             className="brand-logo"
             src="/assets/bavexa-logo.png"
@@ -128,22 +196,28 @@ export function Header() {
         <CalBookingButton className="nav-cta" arrow="external" />
 
         <button
+          ref={toggleRef}
           className="menu-toggle"
           type="button"
           aria-expanded={open}
           aria-controls="mobile-navigation"
           aria-label={open ? "Close navigation" : "Open navigation"}
           onClick={() => {
+            if (open) {
+              closeMenu();
+              return;
+            }
             setMenuPortalReady(true);
-            setOpen((value) => !value);
+            menuHistory.current?.open(window.location.href);
+            setOpen(true);
           }}
         >
           {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
         </button>
       </div>
 
-      {isDemo ? (menuPortalReady ? createPortal(mobileNavigation, document.body) : null) : mobileNavigation}
     </header>
+    {menuPortalReady ? createPortal(mobileNavigation, document.body) : null}
     </>
   );
 }

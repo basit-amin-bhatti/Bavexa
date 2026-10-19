@@ -12,8 +12,8 @@ export const siteConfig = {
   ],
   ctas: {
     primary: "BOOK A FREE ROOFING GROWTH CALL",
-    secondary: "See How It Works",
-    secondaryHref: "/#how-it-works",
+    secondary: "Talk to Mike — Free AI Demo",
+    secondaryHref: "/demo",
   },
   founder: {
     name: "Basit Amin Bhatti",

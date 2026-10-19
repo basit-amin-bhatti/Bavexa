@@ -9,6 +9,7 @@ import {
   DatabaseZap,
   MapPinCheck,
   MessageSquareText,
+  Mic,
   PhoneMissed,
   RefreshCw,
   SearchCheck,
@@ -50,7 +51,10 @@ export function HeroSection() {
           <p className="hero-support">BAVEXA responds to new roofing leads within seconds, 24/7—helping you book the inspection before they call another roofer.</p>
           <div className="hero-actions">
             <CalBookingButton className="button button-primary" />
-            <Button href={siteConfig.ctas.secondaryHref} variant="secondary">{siteConfig.ctas.secondary}</Button>
+            <Button href={siteConfig.ctas.secondaryHref} variant="secondary" className="hero-demo-cta">
+              <Mic size={18} aria-hidden="true" />
+              {siteConfig.ctas.secondary}
+            </Button>
           </div>
           <p className="hero-reassurance"><CircleCheck size={16} aria-hidden="true" /> No pressure. We’ll simply show you where leads may be slipping through the cracks.</p>
         </div>
