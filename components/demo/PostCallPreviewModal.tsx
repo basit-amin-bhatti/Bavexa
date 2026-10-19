@@ -2,6 +2,8 @@
 
 import { Info, X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
+import { CalBookingButton } from "@/components/CalBookingButton";
+import { PricingReminder } from "@/components/PricingReminder";
 import styles from "./LiveDemo.module.css";
 
 export function PostCallPreviewModal({ open, onClose, children }: {
@@ -10,6 +12,12 @@ export function PostCallPreviewModal({ open, onClose, children }: {
   children: ReactNode;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const openConsultation = () => {
+    // Release the native dialog's top layer before Cal mounts its booking modal.
+    dialogRef.current?.close();
+    onClose();
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -48,6 +56,20 @@ export function PostCallPreviewModal({ open, onClose, children }: {
         <div className={styles.modalContent}>
           <p id="post-call-preview-description" className={styles.modalDisclosure}><Info size={16} aria-hidden="true" /><span>These are fictional examples, not results from your call. Nothing has been saved or synchronized.</span></p>
           {children}
+          <section className={styles.postCallConversion} aria-labelledby="post-call-consultation-title">
+            <div>
+              <h3 id="post-call-consultation-title">Ready to Have Mike Answer Calls for Your Roofing Company?</h3>
+              <p>Let&apos;s set up a system that captures leads and books inspections automatically.</p>
+            </div>
+            <div className={styles.postCallAction}>
+              <PricingReminder placement="postCall" />
+              <CalBookingButton
+                label="Book Your Free Strategy Call"
+                className={`button button-primary ${styles.postCallConversionButton}`}
+                onBeforeOpen={openConsultation}
+              />
+            </div>
+          </section>
         </div>
       </div>
     </dialog>

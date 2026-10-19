@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PricingSection } from "@/components/sections/PricingSection";
 import {
   ComparisonSection,
   DemoSection,
@@ -29,6 +30,7 @@ export default function Home() {
       <DemoSection />
       <RoiSection />
       <IntegrationsSection />
+      <PricingSection />
       <FounderContactSection />
       <FounderSection />
     </main>

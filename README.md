@@ -109,18 +109,31 @@ Integration capability categories are in `content/site.ts` under `integrations`.
 
 ### Pricing
 
-Pricing is configured—but disabled—in `content/site.ts`:
+The single BAVEXA Starter card and all hero/demo/popup pricing reminders share `content/site.ts`:
 
 ```ts
 pricing: {
-  enabled: false,
-  trialDays: 14,
-  minimumMonthly: 297,
-  maximumMonthly: 497,
+  enabled: true,
+  planName: "BAVEXA Starter",
+  currency: "USD",
+  startingMonthly: 399,
+  setupFee: 299,
+  launchOffer: {
+    enabled: true,
+    badge: "Launch Offer",
+    setupLabel: "Setup Fee Waived — FREE",
+  },
+  implementationDays: { minimum: 3, maximum: 7 },
+  includedCallMinutes: null,
+  overagePerMinute: null,
 }
 ```
 
-Keep `enabled: false` until the commercial offer is approved and a pricing section has been reviewed.
+The card sits after Integrations and before Speak With the Founder. Edit `features`, `customPricing`, and `cta` in the same object. Setting `enabled: false` hides the pricing section and all three reminders. There is no advertised free trial, unlimited-usage promise, or purchase/checkout flow; the CTA uses the existing Cal.com strategy-call modal.
+
+The $399 starting price is the monthly subscription, not a separate activation or starting fee. The original $299 one-time setup fee is preserved, struck through, and waived for Starter launch customers while `launchOffer.enabled` is true. The shared `SetupOffer` component presents “Setup Fee Waived — FREE” consistently wherever setup pricing appears. Set `launchOffer.enabled` to false to restore the setup charge. No countdown, deadline, or limited-time claim is invented.
+
+Call-minute allowances and overage rates are **not confirmed**. Leave both fields `null` until approved; the card states: “Monthly call allowance and any additional usage charges are confirmed in your proposal before you commit.” Once confirmed, set the included monthly minutes and the USD rate per extra minute; `lib/pricing.ts` generates the disclosure without guessing missing values. The 3–7-business-day implementation window is a target, not a guarantee.
 
 ### Testimonials and social proof
 

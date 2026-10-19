@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { AuditForm } from "@/components/AuditForm";
 import { CalBookingButton } from "@/components/CalBookingButton";
+import { PricingReminder } from "@/components/PricingReminder";
 import { ContactMessageForm } from "@/components/ContactMessageForm";
 import { DemoExperience } from "@/components/DemoExperience";
 import { FounderPortrait } from "@/components/FounderPortrait";
@@ -56,6 +57,7 @@ export function HeroSection() {
               {siteConfig.ctas.secondary}
             </Button>
           </div>
+          <PricingReminder placement="hero" />
           <p className="hero-reassurance"><CircleCheck size={16} aria-hidden="true" /> No pressure. We’ll simply show you where leads may be slipping through the cracks.</p>
         </div>
         <div className="hero-product"><LeadJourney /></div>

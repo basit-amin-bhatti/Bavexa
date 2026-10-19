@@ -2,6 +2,7 @@
 
 import { ArrowDown, ArrowRight, CalendarCheck2, Check, Database, Info, MessageSquare, MessagesSquare, Sparkles, UserRoundCheck, UserRoundPlus } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
+import { CalBookingButton } from "@/components/CalBookingButton";
 import { PostCallPreviewModal } from "./PostCallPreviewModal";
 import { MikeVoiceAgent } from "./MikeVoiceAgent";
 import { createCompletedCallGate, subscribeToMikeCallLifecycle } from "./callLifecycle";
@@ -24,17 +25,23 @@ const agentWorkflow = [
 
 function MikeAgentPanel() {
   return (
-    <div className={styles.agentPanel}>
-      <MikeVoiceAgent />
-      <ol className={styles.agentFooter} aria-label="BAVEXA lead conversion workflow">
-        {agentWorkflow.map(({ label, icon: Icon }, index) => (
-          <li key={label} className={styles.workflowStep}>
-            <span className={styles.workflowMarker}><span>{String(index + 1).padStart(2, "0")}</span><Icon size={14} strokeWidth={1.7} aria-hidden="true" /></span>
-            <b>{label}</b>
-            {index < agentWorkflow.length - 1 ? <ArrowRight size={11} className={styles.workflowArrow} aria-hidden="true" /> : null}
-          </li>
-        ))}
-      </ol>
+    <div className={styles.agentColumn}>
+      <div className={styles.agentPanel}>
+        <MikeVoiceAgent />
+        <ol className={styles.agentFooter} aria-label="BAVEXA lead conversion workflow">
+          {agentWorkflow.map(({ label, icon: Icon }, index) => (
+            <li key={label} className={styles.workflowStep}>
+              <span className={styles.workflowMarker}><span>{String(index + 1).padStart(2, "0")}</span><Icon size={14} strokeWidth={1.7} aria-hidden="true" /></span>
+              <b>{label}</b>
+              {index < agentWorkflow.length - 1 ? <ArrowRight size={11} className={styles.workflowArrow} aria-hidden="true" /> : null}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <CalBookingButton
+        label="Want Mike Working for Your Roofing Business? Let's Talk"
+        className={styles.agentConsultationLink}
+      />
     </div>
   );
 }

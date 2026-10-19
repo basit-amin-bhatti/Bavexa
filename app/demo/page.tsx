@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight, CalendarDays, Check, FileSpreadsheet, Headphones, Layers3, ShieldCheck } from "lucide-react";
 import { CalBookingButton } from "@/components/CalBookingButton";
+import { PricingReminder } from "@/components/PricingReminder";
 import { LiveAiDemo } from "@/components/demo/LiveAiDemo";
 import styles from "@/components/demo/LiveDemo.module.css";
 
@@ -96,7 +97,7 @@ export default function DemoPage() {
         <div className="container">
           <div className={styles.conversionCard}>
             <div><p className={styles.heroEyebrow}>YOUR ROOFING COMPANY. YOUR WORKFLOW.</p><h2 id="demo-consultation-title">Ready to Put AI to Work for Your Roofing Business?</h2><p>Talk with Basit about your lead process and see where BAVEXA could fit.</p></div>
-            <div className={styles.conversionAction}><CalBookingButton label="Book a Free Consultation" className="button button-primary" /><span><ShieldCheck size={14} aria-hidden="true" /> Free strategy call · No obligation</span></div>
+            <div className={styles.conversionAction}><PricingReminder placement="demo" /><CalBookingButton label="Book a Free Consultation" className="button button-primary" /><span><ShieldCheck size={14} aria-hidden="true" /> Free strategy call · No obligation</span></div>
           </div>
         </div>
       </section>

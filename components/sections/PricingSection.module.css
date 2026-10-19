@@ -1,0 +1,53 @@
+.section { padding: 92px 0; border-top: 1px solid var(--line); background: var(--paper); }
+.heading { max-width: 760px; margin: 0 auto 36px; text-align: center; }
+.heading :global(.eyebrow) { justify-content: center; margin-bottom: 14px; }
+.heading h2 { margin: 0; font-size: clamp(2rem, 3.5vw, 3.15rem); font-weight: 570; line-height: 1.15; letter-spacing: -.045em; }
+.card { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); width: min(100%, 1000px); margin: auto; overflow: hidden; border: 1px solid #344b6b; border-radius: 24px; background: radial-gradient(ellipse at 100% 0, #172e50, #0e151f 60%); color: white; box-shadow: 0 18px 58px #1769ff13, 0 12px 40px #0d111711; transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
+.card:hover { transform: translateY(-2px); border-color: #547bb2; box-shadow: 0 20px 64px #1769ff20, 0 16px 40px #0d111717; }
+.summary { min-width: 0; padding: 36px 40px 30px; }
+.planHeading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 24px; }
+.summary h3 { margin: 0; color: #d9e6fa; font-size: 1.25rem; font-weight: 600; letter-spacing: -.02em; }
+.launchBadge { display: inline-flex; align-items: center; padding: 5px 9px; border: 1px solid #527dbb66; border-radius: 999px; background: #1769ff15; color: #bbd4fb; font-size: .62rem; font-weight: 650; line-height: 1.5; letter-spacing: .08em; text-transform: uppercase; }
+.starting { margin: 0 0 8px; color: #b9c9e0; font-size: .8rem; }
+.price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; margin: 0; }
+.price strong { color: #f6f9ff; font-size: clamp(4rem, 6.5vw, 5.5rem); font-weight: 580; line-height: 1; letter-spacing: -.065em; font-variant-numeric: tabular-nums; }
+.price > span { color: #c3d2e7; font-size: 1.1rem; }
+.price small { color: #a3b7d4; font-size: .62rem; font-weight: 600; }
+.setup { margin-top: 16px; }
+.implementation { display: flex; align-items: flex-start; gap: 9px; margin: 24px 0 0; color: #92b8f6; }
+.implementation svg { flex-shrink: 0; margin-top: 2px; }
+.implementation span, .implementation strong { display: block; }
+.implementation span { color: #acbdd4; font-size: .7rem; }
+.implementation strong { margin-top: 3px; color: #dbe7f8; font-size: .83rem; font-weight: 550; }
+.action { grid-column: 1 / -1; padding: 24px 40px; border-top: 1px solid #ffffff12; text-align: center; }
+.booking { width: min(100%, 400px); padding: 12px 16px; cursor: pointer; }
+.booking > svg { flex-shrink: 0; }
+.reassurance { margin: 12px 0 0; color: #b5c4d9; font-size: .67rem; text-align: center; }
+.included { display: flex; min-width: 0; flex-direction: column; justify-content: center; padding: 36px 40px; border-left: 1px solid #ffffff12; }
+.includedLabel { margin: 0 0 22px; color: #8fb7fa; font-size: .63rem; font-weight: 650; letter-spacing: .12em; }
+.included ul { display: grid; gap: 17px; margin: 0; padding: 0; list-style: none; }
+.included li { display: flex; align-items: flex-start; gap: 10px; color: #e0e8f5; font-size: .86rem; line-height: 1.5; }
+.included li svg { flex-shrink: 0; margin-top: 2px; color: #85aff4; }
+.custom { margin: 26px 0 0; padding-top: 22px; border-top: 1px solid #ffffff12; color: #b5c4d9; font-size: .76rem; line-height: 1.65; }
+.usage { display: flex; grid-column: 1 / -1; gap: 10px; padding: 20px 40px; border-top: 1px solid #ffffff12; background: #ffffff03; color: #bdcce0; }
+.usage svg { flex-shrink: 0; margin-top: 2px; color: #96b8ed; }
+.usage p { margin: 0; font-size: .74rem; line-height: 1.7; }
+@media (max-width: 760px) {
+  .section { padding: 68px 0; }
+  .heading { max-width: 540px; margin-bottom: 28px; }
+  .heading h2 { font-size: clamp(1.95rem, 6.5vw, 2.7rem); }
+  .card { grid-template-columns: 1fr; max-width: 540px; border-radius: 20px; }
+  .summary { padding: 28px; }
+  .included { padding: 26px 28px; border-top: 1px solid #ffffff12; border-left: 0; }
+  .action { padding: 24px 28px; }
+  .usage { padding: 20px 28px; }
+}
+@media (max-width: 375px) {
+  .summary, .included { padding: 24px 20px; }
+  .usage { padding: 18px 20px; }
+  .action { padding: 22px 20px; }
+  .price { gap: 0 6px; }
+  .price > span { font-size: 1rem; }
+  .booking { font-size: .84rem; }
+}
+@media (prefers-reduced-motion: reduce) { .card:hover { transform: none; } }

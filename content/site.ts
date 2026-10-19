@@ -41,10 +41,29 @@ export const siteConfig = {
     caseStudies: [],
   },
   pricing: {
-    enabled: false,
-    trialDays: 14,
-    minimumMonthly: 297,
-    maximumMonthly: 497,
+    enabled: true,
+    planName: "BAVEXA Starter",
+    currency: "USD",
+    startingMonthly: 399,
+    setupFee: 299,
+    launchOffer: {
+      enabled: true,
+      badge: "Launch Offer",
+      setupLabel: "Setup Fee Waived — FREE",
+    },
+    implementationDays: { minimum: 3, maximum: 7 },
+    includedCallMinutes: null,
+    overagePerMinute: null,
+    features: [
+      "24/7 AI Roofing Receptionist",
+      "Roofing Lead Qualification",
+      "Automated Inspection Booking",
+      "Google Sheets & Calendar Integration",
+      "Call Transcripts & Lead Records",
+      "Basic Ongoing Support",
+    ],
+    customPricing: "Custom pricing based on call volume and advanced integrations.",
+    cta: "Book Your Free Strategy Call",
   },
 } as const;
 
