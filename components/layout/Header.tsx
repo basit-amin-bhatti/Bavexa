@@ -9,6 +9,8 @@ import { CalBookingButton } from "@/components/CalBookingButton";
 import { siteConfig } from "@/content/site";
 import { createMobileNavigationHistory } from "@/lib/mobile-navigation";
 
+const headerNav = siteConfig.nav.map((item) => item.href === "/#founder" ? { label: "Contact", href: "/contact" } : item);
+
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -137,7 +139,7 @@ export function Header() {
       <div id="mobile-navigation" className={`mobile-nav ${scrolled ? "mobile-nav-scrolled" : ""} ${open ? "mobile-nav-open" : ""}`} aria-hidden={!open} inert={!open}>
         <nav aria-label="Mobile navigation">
           <Link href="/" replace onNavigate={closeForNavigation}>Home</Link>
-          {siteConfig.nav.map((item) => {
+          {headerNav.map((item) => {
             const isLiveAiDemo = item.href === "/demo";
 
             return (
@@ -177,7 +179,7 @@ export function Header() {
         </Link>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {siteConfig.nav.map((item) => {
+          {headerNav.map((item) => {
             const isLiveAiDemo = item.href === "/demo";
 
             return (

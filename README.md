@@ -89,7 +89,13 @@ public/demo/bavexa-demo.mp4
 
 The current demo modal intentionally shows an animated product walkthrough instead of pretending placeholder footage is real. When a final MP4 is available, replace the modal placeholder in `components/DemoExperience.tsx` with a `<video controls preload="metadata">` element that uses the path above. Do not autoplay audio.
 
-### Audit form webhook
+### Contact form (Web3Forms)
+
+The `/contact` form submits its validated fields directly to `https://api.web3forms.com/submit`. Its public access key is configured in `content/contact.ts`; Web3Forms delivers submissions to the inbox associated with that key. No custom subject, additional visible fields, or redirects are added. Success requires both an HTTP success response and `success: true` from Web3Forms; failures preserve entered values for retry. The existing honeypot and duplicate-submission guard remain active.
+
+Web3Forms recommends browser-side submission; server-side use requires its paid plan and IP allowlisting. The access key is intentionally public, as documented at https://docs.web3forms.com/getting-started/faq. No private email credentials are used. The legacy `/api/contact` endpoint is retained for compatibility, but the current form no longer uses it or requires `LEAD_WEBHOOK_URL`. Inbox delivery must be verified with a real submission and access to the receiving inbox; automated tests mock the provider and do not send emails.
+
+### Legacy audit form webhook
 
 Copy `.env.example` to `.env.local` and set:
 
@@ -129,7 +135,7 @@ pricing: {
 }
 ```
 
-The card sits after Integrations and before Speak With the Founder. Edit `features`, `customPricing`, and `cta` in the same object. Setting `enabled: false` hides the pricing section and all three reminders. There is no advertised free trial, unlimited-usage promise, or purchase/checkout flow; the CTA uses the existing Cal.com strategy-call modal.
+The card sits after Integrations and before Meet the Founder. Edit `features`, `customPricing`, and `cta` in the same object. Setting `enabled: false` hides the pricing section and all three reminders. There is no advertised free trial, unlimited-usage promise, or purchase/checkout flow; the CTA uses the existing Cal.com strategy-call modal.
 
 The $399 starting price is the monthly subscription, not a separate activation or starting fee. The original $299 one-time setup fee is preserved, struck through, and waived for Starter launch customers while `launchOffer.enabled` is true. The shared `SetupOffer` component presents “Setup Fee Waived — FREE” consistently wherever setup pricing appears. Set `launchOffer.enabled` to false to restore the setup charge. No countdown, deadline, or limited-time claim is invented.
 

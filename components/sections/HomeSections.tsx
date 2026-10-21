@@ -18,10 +18,11 @@ import {
   Webhook,
   Workflow,
 } from "lucide-react";
-import { AuditForm } from "@/components/AuditForm";
+import { ContactForm } from "@/components/ContactForm";
+import { OtherWaysToConnect } from "@/components/ContactChannels";
+import contactStyles from "@/components/ContactChannels.module.css";
 import { CalBookingButton } from "@/components/CalBookingButton";
 import { PricingReminder } from "@/components/PricingReminder";
-import { ContactMessageForm } from "@/components/ContactMessageForm";
 import { DemoExperience } from "@/components/DemoExperience";
 import { FounderPortrait } from "@/components/FounderPortrait";
 import { LeadJourney } from "@/components/LeadJourney";
@@ -183,30 +184,6 @@ export function IntegrationsSection() {
   );
 }
 
-export function FounderContactSection() {
-  return (
-    <section className="section founder-contact-section" id="contact">
-      <div className="container founder-contact-grid">
-        <div className="founder-call-panel">
-          <span className="founder-contact-eyebrow"><CalendarCheck2 size={17} aria-hidden="true" /> SPEAK WITH THE FOUNDER</span>
-          <h2>Find Where Your Roofing Leads Are Slipping Away.</h2>
-          <p>Book a free strategy call with Basit Amin Bhatti, Founder of BAVEXA, and explore how your lead response, qualification, follow-up, and inspection booking process could be improved.</p>
-          <div className="founder-call-action">
-            <CalBookingButton className="button button-primary founder-contact-cta" />
-            <span><Check size={14} aria-hidden="true" /> 30 minutes <i aria-hidden="true">·</i> No obligation</span>
-          </div>
-        </div>
-        <div className="contact-message-card">
-          <span className="contact-message-eyebrow">CONTACT BAVEXA</span>
-          <h2>Send a Message.</h2>
-          <p>Tell us what you need help with and we’ll point you toward the right next step.</p>
-          <ContactMessageForm />
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function FounderSection() {
   const founder = siteConfig.founder;
 
@@ -233,19 +210,22 @@ export function FounderSection() {
   );
 }
 
-export function AuditSection() {
+export function ContactSection() {
   return (
-    <section className="section audit-section" id="audit">
-      <div className="container audit-layout">
-        <div className="audit-copy">
-          <SectionHeading theme="dark" eyebrow="FREE AI LEAD CONVERSION AUDIT" title="Find the Gaps in Your Roofing Lead Process." copy="We’ll identify where your roofing business may be losing leads and show you where AI could help create a faster, more consistent conversion process." />
-          <div className="audit-deliverables">
-            <span>YOUR AUDIT LOOKS AT</span>
-            <ul><li><MapPinCheck aria-hidden="true" />Lead response gaps</li><li><MessageSquareText aria-hidden="true" />Follow-up consistency</li><li><Target aria-hidden="true" />Qualification process</li><li><Workflow aria-hidden="true" />Booking and CRM handoff</li></ul>
-          </div>
-          <p className="audit-reassurance"><Check size={15} aria-hidden="true" /> No pressure. No generic AI pitch. Just a practical review of your current process.</p>
+    <section className="section audit-section" id="contact-team">
+      <div className={`container audit-layout ${contactStyles.layout}`}>
+        <div className={`audit-copy ${contactStyles.copy}`}>
+          <SectionHeading theme="dark" eyebrow="LET’S TALK" title="An AI Receptionist. Built Around Your Roofing Team." copy="Tell us about your roofing business. We’ll discuss how BAVEXA could help answer inquiries, qualify opportunities, and move prospects toward booked inspections." />
         </div>
-        <div className="audit-form-card"><div className="form-card-head"><span>GET YOUR FREE AUDIT</span><i>Typically takes 2 minutes</i></div><AuditForm /></div>
+        <div className={`audit-form-card ${contactStyles.form}`}><div className="form-card-head"><span>GET IN TOUCH</span><i>Tell us about your business</i></div><ContactForm /></div>
+        <OtherWaysToConnect />
+        <div className={contactStyles.benefits}>
+          <div className="audit-deliverables">
+            <span>HOW WE CAN HELP</span>
+            <ul><li><MapPinCheck aria-hidden="true" />Lead response</li><li><MessageSquareText aria-hidden="true" />Consistent follow-up</li><li><Target aria-hidden="true" />Lead qualification</li><li><Workflow aria-hidden="true" />Inspection booking</li></ul>
+          </div>
+          <p className="audit-reassurance"><Check size={15} aria-hidden="true" /> A straightforward conversation about what’s right for your team. No obligation.</p>
+        </div>
       </div>
     </section>
   );

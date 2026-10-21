@@ -1,0 +1,6 @@
+.messageField { grid-column: 1 / -1; }
+.message { display: block; width: 100%; max-width: 100%; min-height: 120px; padding: 12px; border: 1px solid #d9dde3; border-radius: 8px; outline: none; background: white; color: var(--ink); font: inherit; font-size: .78rem; line-height: 1.6; resize: vertical; transition: border-color .2s ease, box-shadow .2s ease; }
+.message::placeholder { color: #a6adb6; }
+.message:focus { border-color: var(--blue); box-shadow: 0 0 0 3px #1769ff1a; }
+.message[aria-invalid="true"] { border-color: var(--danger); }
+@media (prefers-reduced-motion: reduce) { .message { transition: none; } }

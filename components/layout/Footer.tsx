@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/content/site";
+import { ContactEmailLink } from "@/components/ContactChannels";
 
 const footerLinks = [
   { label: "Home", href: "/" },
@@ -26,6 +27,7 @@ export function Footer() {
             />
           </Link>
           <p className="footer-positioning">{siteConfig.brand.positioning}</p>
+          <ContactEmailLink footer />
         </div>
 
         <nav className="footer-links" aria-label="Footer navigation">

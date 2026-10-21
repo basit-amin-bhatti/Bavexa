@@ -1,0 +1,28 @@
+.layout:global(.audit-layout) { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-areas: "intro form" "benefits connect"; gap: 28px 48px; }
+.layout .copy { grid-area: intro; position: static; }
+.form { grid-area: form; align-self: start; min-width: 0; }
+.benefits { grid-area: benefits; min-width: 0; }
+.benefits :global(.audit-deliverables) { margin-top: 0; }
+.connections { grid-area: connect; align-self: start; min-width: 0; padding: 22px; border: 1px solid #303f55; border-radius: 12px; background: #0d1725; }
+.connections h3 { margin: 0 0 17px; color: #e5ecf7; font-size: .95rem; font-weight: 580; letter-spacing: -.015em; }
+.whatsapp { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 11px 14px; border: 1px solid #3d5677; border-radius: 9px; background: #142238; color: #dfebff; font-size: .79rem; font-weight: 600; line-height: 1.5; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+.whatsapp img, .whatsapp svg { flex-shrink: 0; }
+.whatsapp > svg { margin-left: auto; color: #9eb7d8; }
+.whatsapp > span { flex: 1; }
+.whatsapp:hover { transform: translateY(-1px); border-color: #6288bd; background: #1a2d48; }
+.email { display: flex; align-items: center; gap: 9px; width: 100%; max-width: 100%; min-height: 44px; margin-top: 17px; color: #c2d1e6; font-size: .78rem; line-height: 1.6; cursor: pointer; transition: color .2s ease; }
+.email svg { flex-shrink: 0; color: #83aff3; }
+.email span { min-width: 0; overflow-wrap: anywhere; }
+.email:hover { color: white; }
+.email:hover span { text-decoration: underline; text-underline-offset: 4px; }
+.whatsapp:focus-visible, .email:focus-visible { outline: 2px solid #83aff3; outline-offset: 4px; }
+.footerEmail { margin-top: 16px; font-size: .74rem; }
+.footerEmail svg { width: 15px; height: 15px; }
+@media (min-width: 901px) {
+  .connections { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; }
+  .connections h3 { grid-column: 1 / -1; }
+  .connections .email { align-self: center; margin-top: 0; }
+}
+@media (max-width: 900px) { .layout:global(.audit-layout) { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "benefits" "form" "connect"; row-gap: 32px; } }
+@media (max-width: 430px) { .connections { padding: 20px 18px; } }
+@media (prefers-reduced-motion: reduce) { .whatsapp, .email { transition: none; } .whatsapp:hover { transform: none; } }

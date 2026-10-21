@@ -53,9 +53,10 @@ test("the pricing card presents setup, target implementation and features before
   assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
 });
 
-test("the single pricing section sits between Integrations and the founder call section", () => {
+test("pricing flows directly from Integrations to Meet the Founder without a homepage contact section", () => {
   const source = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.equal(source.match(/<PricingSection\s*\/>/g)?.length, 1);
   assert.ok(source.indexOf("<IntegrationsSection />") < source.indexOf("<PricingSection />"));
-  assert.ok(source.indexOf("<PricingSection />") < source.indexOf("<FounderContactSection />"));
+  assert.match(source, /<PricingSection\s*\/>\s*<FounderSection\s*\/>/);
+  assert.doesNotMatch(source, /FounderContactSection|ContactMessageForm/);
 });

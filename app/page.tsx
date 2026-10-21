@@ -3,7 +3,6 @@ import { PricingSection } from "@/components/sections/PricingSection";
 import {
   ComparisonSection,
   DemoSection,
-  FounderContactSection,
   FounderSection,
   HeroSection,
   HowItWorksSection,
@@ -31,7 +30,6 @@ export default function Home() {
       <RoiSection />
       <IntegrationsSection />
       <PricingSection />
-      <FounderContactSection />
       <FounderSection />
     </main>
   );
