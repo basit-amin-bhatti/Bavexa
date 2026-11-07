@@ -21,10 +21,23 @@ export const siteConfig = {
     positioning: "AI Growth Partner for Roofing Companies",
     image: "/images/founder.png",
     imageEnabled: true,
+    initials: "BAB",
     website: "https://basitaminbhatti.me",
     message:
       "I built BAVEXA to help roofing companies stop losing valuable leads through missed calls, slow responses, poor qualification, and weak follow-up.",
     cta: "Meet Basit →",
+  },
+  coFounder: {
+    name: "Rumman Hassan",
+    role: "Co-Founder, BAVEXA",
+    positioning: "",
+    image: "/images/rumman-hassan.jpg",
+    imageEnabled: true,
+    initials: "RH",
+    website: "https://rummanhassan.cv/",
+    message:
+      "I help build BAVEXA around a clear goal: giving roofing companies a faster, more consistent path from new lead to booked inspection.",
+    cta: "Meet Rumman →",
   },
   integrations: [
     "Lead Sources",

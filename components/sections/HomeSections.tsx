@@ -185,25 +185,24 @@ export function IntegrationsSection() {
 }
 
 export function FounderSection() {
-  const founder = siteConfig.founder;
+  const founders = [siteConfig.founder, siteConfig.coFounder];
 
   return (
     <section className="section founder-section" id="founder">
       <div className="container founder-card">
-        <FounderPortrait />
-        <div className="founder-copy">
-          <span className="eyebrow">MEET THE FOUNDER</span>
-          <h2>{founder.name}</h2>
-          <p className="founder-role">{founder.role} · {founder.positioning}</p>
-          <blockquote>“{founder.message}”</blockquote>
-          <a href={founder.website} target="_blank" rel="noreferrer">{founder.cta}</a>
-        </div>
-        <div className="founder-brand-relationship" aria-hidden="true">
-          <span>THE EXPERT</span>
-          <strong>Basit</strong>
-          <ArrowRight />
-          <span>THE SYSTEM</span>
-          <strong>BAVEXA</strong>
+        <span className="eyebrow founder-heading">MEET THE FOUNDERS</span>
+        <div className="founders-grid">
+          {founders.map((founder) => (
+            <article className="founder-profile" key={founder.name}>
+              <FounderPortrait profile={founder} />
+              <div className="founder-copy">
+                <h2>{founder.name}</h2>
+                <p className="founder-role">{founder.role}{founder.positioning ? ` · ${founder.positioning}` : ""}</p>
+                <blockquote>“{founder.message}”</blockquote>
+                <a href={founder.website} target="_blank" rel="noreferrer">{founder.cta}</a>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

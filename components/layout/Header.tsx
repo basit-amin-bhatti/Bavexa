@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { Menu, Mic, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -12,11 +13,13 @@ import { createMobileNavigationHistory } from "@/lib/mobile-navigation";
 const headerNav = siteConfig.nav.map((item) => item.href === "/#founder" ? { label: "Contact", href: "/contact" } : item);
 
 export function Header() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [menuPortalReady, setMenuPortalReady] = useState(false);
   const menuHistory = useRef<ReturnType<typeof createMobileNavigationHistory> | null>(null);
   const scrollLocked = useRef(false);
+  const scrollHomeAfterNavigation = useRef(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   const closeMenu = useCallback(() => {
@@ -24,10 +27,43 @@ export function Header() {
     setOpen(false);
   }, []);
 
-  const closeForNavigation = () => {
+  const closeForNavigation = useCallback(() => {
     menuHistory.current?.prepareNavigation();
     setOpen(false);
-  };
+  }, []);
+
+  const scrollToHero = useCallback((waitForMenuUnlock = false) => {
+    const scroll = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (waitForMenuUnlock) {
+      requestAnimationFrame(() => requestAnimationFrame(scroll));
+      return;
+    }
+
+    scroll();
+  }, []);
+
+  const handleBrandNavigation = useCallback((event: { preventDefault: () => void }) => {
+    const menuWasOpen = open;
+    closeForNavigation();
+
+    if (pathname !== "/") {
+      scrollHomeAfterNavigation.current = true;
+      return;
+    }
+
+    event.preventDefault();
+    window.history.replaceState(window.history.state, "", "/");
+    scrollToHero(menuWasOpen);
+  }, [closeForNavigation, open, pathname, scrollToHero]);
+
+  useEffect(() => {
+    if (pathname !== "/" || !scrollHomeAfterNavigation.current) return;
+
+    scrollHomeAfterNavigation.current = false;
+    const frame = requestAnimationFrame(() => scrollToHero());
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, scrollToHero]);
 
   useEffect(() => {
     const controller = createMobileNavigationHistory(window.history, () => setOpen(false));
@@ -166,7 +202,7 @@ export function Header() {
     {open ? <div className="mobile-header-spacer" aria-hidden="true" /> : null}
     <header className={`site-header ${scrolled ? "site-header-scrolled" : ""} ${open ? "mobile-menu-open" : ""}`}>
       <div className="container nav-shell">
-        <Link className="brand" href="/" aria-label="BAVEXA home" replace={open} onNavigate={closeForNavigation}>
+        <Link className="brand" href="/" aria-label="BAVEXA home" replace={open} scroll={false} onNavigate={handleBrandNavigation}>
           <Image
             className="brand-logo"
             src="/assets/bavexa-logo.png"
