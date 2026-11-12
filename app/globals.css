@@ -2051,38 +2051,6 @@ h3 {
   background: #f9f8f5;
 }
 
-.integration-row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-  margin-top: 46px;
-}
-
-.integration-row div {
-  display: flex;
-  min-height: 120px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border: 1px solid #dfe1e4;
-  border-radius: 12px;
-  background: white;
-  color: #414b57;
-  font-size: 0.72rem;
-  text-align: center;
-  transition: border-color 0.22s ease, transform 0.22s ease;
-}
-
-.integration-row div:hover {
-  border-color: #aec4f2;
-  transform: translateY(-2px);
-}
-
-.integration-row svg {
-  color: var(--blue);
-}
-
 .integration-note {
   margin: 18px 0 0;
   color: #8c949f;
@@ -2153,6 +2121,11 @@ h3 {
   height: 100%;
   object-fit: cover;
   object-position: center 20%;
+}
+
+.founder-profile:first-child .founder-portrait img {
+  transform: scale(1.4);
+  transform-origin: 42% 8%;
 }
 
 .founder-placeholder {
@@ -2700,7 +2673,6 @@ h3 {
   .demo-layout { grid-template-columns: 1fr; }
   .demo-copy { max-width: 650px; }
   .demo-stage-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; }
-  .integration-row { grid-template-columns: repeat(3, 1fr); }
   .audit-layout { grid-template-columns: 1fr; }
   .audit-copy { position: static; }
 }
@@ -2765,7 +2737,6 @@ h3 {
   .modal-stage-list { display: grid; grid-template-columns: 1fr 1fr; }
   .modal-stage-list li { min-height: 46px; }
   .modal-note { align-items: flex-start; flex-direction: column; }
-  .integration-row { grid-template-columns: repeat(2, 1fr); }
   .founders-grid { grid-template-columns: 1fr; gap: 64px 0; }
   .founders-grid::before { top: 50%; right: 0; bottom: auto; left: 0; width: auto; height: 1px; }
   .founder-profile { grid-template-rows: 310px minmax(0, 1fr); }
@@ -2804,7 +2775,6 @@ h3 {
   .modal-stage-list li:nth-child(n+4) { display: none; }
   .active-demo-stage { padding-inline: 18px; }
   .active-demo-stage strong { font-size: 1.35rem; }
-  .integration-row div { min-height: 105px; }
   .founder-card { padding: 18px; }
   .founder-profile { grid-template-rows: 285px minmax(0, 1fr); }
 }
@@ -2821,7 +2791,6 @@ h3 {
   .calculator-controls,
   .calculator-results { padding-inline: 16px; }
   .revenue-result { font-size: 2.8rem; }
-  .integration-row { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

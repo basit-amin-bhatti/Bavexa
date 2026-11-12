@@ -25,7 +25,7 @@ export const siteConfig = {
     website: "https://basitaminbhatti.me",
     message:
       "I built BAVEXA to help roofing companies stop losing valuable leads through missed calls, slow responses, poor qualification, and weak follow-up.",
-    cta: "Meet Basit →",
+    cta: "Connect with Basit →",
   },
   coFounder: {
     name: "Rumman Hassan",
@@ -34,19 +34,11 @@ export const siteConfig = {
     image: "/images/rumman-hassan.jpg",
     imageEnabled: true,
     initials: "RH",
-    website: "https://rummanhassan.cv/",
+    website: "https://www.linkedin.com/in/rummanhassan13/",
     message:
       "I help build BAVEXA around a clear goal: giving roofing companies a faster, more consistent path from new lead to booked inspection.",
-    cta: "Meet Rumman →",
+    cta: "Connect with Rumman →",
   },
-  integrations: [
-    "Lead Sources",
-    "SMS",
-    "CRM",
-    "Appointment Scheduling",
-    "Automation",
-    "Webhooks / API",
-  ],
   socialProof: {
     enabled: false,
     testimonials: [],

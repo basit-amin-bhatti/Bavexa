@@ -13,9 +13,7 @@ import {
   PhoneMissed,
   RefreshCw,
   SearchCheck,
-  Send,
   Target,
-  Webhook,
   Workflow,
 } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
@@ -26,6 +24,7 @@ import { PricingReminder } from "@/components/PricingReminder";
 import { DemoExperience } from "@/components/DemoExperience";
 import { FounderPortrait } from "@/components/FounderPortrait";
 import { LeadJourney } from "@/components/LeadJourney";
+import { IntegrationShowcase } from "@/components/IntegrationShowcase";
 import { RoiCalculator } from "@/components/RoiCalculator";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -38,7 +37,6 @@ import {
 
 const problemIcons = [PhoneMissed, Clock3, MessageSquareText, RefreshCw, SearchCheck, CalendarCheck2];
 const solutionIcons = [Clock3, PhoneMissed, MessageSquareText, SearchCheck, CalendarCheck2, DatabaseZap];
-const integrationIcons = [Send, MessageSquareText, DatabaseZap, CalendarCheck2, Workflow, Webhook];
 
 export function HeroSection() {
   return (
@@ -176,8 +174,8 @@ export function IntegrationsSection() {
   return (
     <section className="section integrations-section">
       <div className="container">
-        <SectionHeading align="center" eyebrow="CONNECTED WORKFLOWS" title="Works With the Tools Your Roofing Team Already Uses." copy="BAVEXA connects with your existing lead sources, messaging, CRM, scheduling, and automation tools—so you don’t have to rebuild your workflow." />
-        <div className="integration-row">{siteConfig.integrations.map((item, index) => { const Icon = integrationIcons[index]; return <div key={item}><Icon aria-hidden="true" /><span>{item}</span></div>; })}</div>
+        <SectionHeading align="center" eyebrow="CONNECTED WORKFLOWS" title="Your Tools. One Connected Workflow." copy="Connect the tools your roofing team already uses to respond faster, follow up, and book inspections." />
+        <IntegrationShowcase />
         <p className="integration-note">Exact integrations are confirmed during your audit.</p>
       </div>
     </section>
